@@ -34,14 +34,16 @@ The **Outbound Chan Diamond Delivery Automation Bot** is a tool designed to stre
 
    It’s recommended to use a virtual environment. First, install pip if you haven’t already:
 
-   ````bash
+   ```bash
    python -m pip install --upgrade pip
    Then, install the required packages:
+
+   ```
 
    ```bash
    pip install -r requirements.txt
 
-   ````
+   ```
 
 3. **Configuration**
 
@@ -58,6 +60,8 @@ Create a configuration file config.json in the root directory with the following
         "some_setting": "value"
         }
     }
+
+    ````
 
 Ensure that you have the appropriate access and permissions for MSB and FileMaker Pro.
 
