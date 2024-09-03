@@ -61,7 +61,7 @@ Create a configuration file config.json in the root directory with the following
         }
     }
 
-    ````
+    ```
 
 Ensure that you have the appropriate access and permissions for MSB and FileMaker Pro.
 
