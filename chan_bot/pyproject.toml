@@ -18,4 +18,5 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = ""
+Homepage = "https://github.com/catRoman/Outbound_Chan_Bot"
+Issues = "https://github.com/catRoman/Outbound_Chan_Bot/issues"
