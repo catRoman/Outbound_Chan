@@ -1,4 +1,4 @@
-# Outbound Chan Diamond Delivery Automation Bot
+# Outbound Chan -- Diamond Delivery Automation Bot
 
 ## Overview
 
