@@ -12,8 +12,8 @@ import os
 
 
 
-def bookseaspan(trailer_bookings):
-    
+def book(trailer_bookings):
+
     #setup
     load_dotenv()
     seaspan_username = os.getenv("SEASPAN_USERNAME")

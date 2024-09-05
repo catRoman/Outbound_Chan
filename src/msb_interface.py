@@ -4,13 +4,24 @@ import sys
 import os
 from dotenv import load_dotenv
 
-def startMSBBot():
+def start_bot():
     #confirm its in chans hand now
     cont = pyautogui.confirm(text='Wanna go full retard?', title='automate linehaul test', buttons=['ok', 'cancel'])
 
     if 'ok' not in cont:
         pyautogui.alert(text='ok', title='wow', button='ok')
         exit(1)
+
+    try:
+        locate_msb_icon = pyautogui.locateCenterOnScreen()
+        if locate_msb_icon is None:
+            pyautogui.alert("msb icon not found, sorry chans going home")
+            exit()
+    except Exception:
+            pyautogui.alert("Theres an issue, sorry chans going home")
+            exit()
+
+
 
     #setup
     pyautogui.PAUSE = 0.5
@@ -33,12 +44,12 @@ def startMSBBot():
 def login_to_home(msb_password):
     #location images
     base_path = get_base_path()
-    msb_icon_1 = os.path.join(base_path, 'gui_image', 'msb_img', 'msb_icon_1.png')
-    login_1 = os.path.join(base_path, 'gui_image', 'msb_img', 'login_1.png')
-    login_1_btn= os.path.join(base_path, 'gui_image', 'msb_img', 'login_1_btn.png')
-    login_2 = os.path.join(base_path, 'gui_image', 'msb_img', 'login_2.png')
-    printer_setup_1 = os.path.join(base_path, 'gui_image', 'msb_img', 'printer_setup_1')
-    dispatch_btn = os.path.join(base_path, 'gui_image', 'msb_img', 'dispatch_btn.png')
+    msb_icon_1 = os.path.join(base_path, 'assets', 'msb_img', 'msb_icon_1.png')
+    login_1 = os.path.join(base_path, 'assets', 'msb_img', 'login_1.png')
+    login_1_btn= os.path.join(base_path, 'assets', 'msb_img', 'login_1_btn.png')
+    login_2 = os.path.join(base_path, 'assets', 'msb_img', 'login_2.png')
+    printer_setup_1 = os.path.join(base_path, 'assets', 'msb_img', 'printer_setup_1')
+    dispatch_btn = os.path.join(base_path, 'assets', 'msb_img', 'dispatch_btn.png')
 
 
     pyautogui.alert(text="Here we go now...")
@@ -70,8 +81,8 @@ def login_to_home(msb_password):
 def home_to_dispatch():
     #location images
     base_path = get_base_path()
-    dispatch_btn = os.path.join(base_path, 'gui_image', 'msb_img', 'dispatch_btn.png')
-    dispatch_linehaul_btn = os.path.join(base_path, 'gui_image', 'msb_img', 'dispatch_linehaul_btn.png')
+    dispatch_btn = os.path.join(base_path, 'assets', 'msb_img', 'dispatch_btn.png')
+    dispatch_linehaul_btn = os.path.join(base_path, 'assets', 'msb_img', 'dispatch_linehaul_btn.png')
 
     #click dispatch
     make_move('../gui_image/msb_img/dispatch_btn.png', confid=0.95)
@@ -140,4 +151,4 @@ def get_base_path():
 
 
 if __name__ == "__main__":
-    startMSBBot()
+    start_bot()

@@ -2,7 +2,7 @@ import sys
 import time
 import warnings
 import pandas as pd
-from src.seaspan_booking import bookseaspan
+from seaspan_booking import book
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
@@ -54,7 +54,7 @@ if __name__ == "__main__":
         print("\n")
         print("Starting trailer bookings...\n")
         time.sleep(1)
-        bookseaspan(trailer_bookings=trailer_bookings)
+        book(trailer_bookings=trailer_bookings)
         #use values to fill in form, save
         #retrieve bol and put in row cell
         #make new booking
