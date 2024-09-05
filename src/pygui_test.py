@@ -75,10 +75,14 @@ def wait(image_path, timeout=30) -> bool:
                 return location
         except pyautogui.ImageNotFoundException:
             pass
-        finally:
-            time.sleep(1)
+        except Exception as e:
+            pyautogui.alert(text=f"An error occurred: {e}")
+            exit()
 
-        raise TimeoutError(f"Timed out waiting for {image_path}")
+        time.sleep(1)
+
+
+    raise TimeoutError(f"Timed out waiting for {image_path}")
 
 # Wit for the image to appear and get its location
     try:
