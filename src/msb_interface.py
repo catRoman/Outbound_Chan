@@ -96,6 +96,26 @@ def home_to_dispatch():
     #click linehaul
     make_move(dispatch_linehaul_btn, confid=0.95)
 
+def create_new_linehaul(trailer_list: list[dict]):
+    base_path = get_base_path()
+    dispatch_linehaul_new_btn = os.path.join(base_path, 'assets', 'msb_img', 'dispatch_linehaul_new_manifests_btn.png')
+
+
+    #click new box
+    make_move(dispatch_linehaul_new_btn)
+    #2 tabs
+    time.sleep(0.5)
+    pyautogui.press('tab')
+    pyautogui.press('tab')
+    #send seaspan, tab
+    #pyautogui.typewriter(trailer_list[]
+    pyautogui.press('tab')
+    #send trailer, tab
+    #send driver number
+    #send tab + 6 down strokes
+    #send enter
+
+
 
 
 
