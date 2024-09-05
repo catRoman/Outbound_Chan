@@ -16,7 +16,7 @@ def startBot():
     msb_password = os.getenv("MSB_PASSWORD")
 
     loginToHome(msb_password)
-    time.sleep(3)
+    time.sleep(1)
     homeToDispatch()
 
     cont = pyautogui.confirm(text='Are you sure you want the Chan to continue to make linehauls?', title='automate linehaul test', buttons=['ok', 'cancel'])
@@ -37,7 +37,7 @@ def loginToHome(msb_password):
     #wait login 2
     wait('../gui_image/msb_img/login_2.png')
     #type password
-    pyautogui.typewrite(msb_password, interval=0.25)
+    pyautogui.typewrite(msb_password, interval=0.125)
     #click ok
     time.sleep(1)
     pyautogui.press('tab')
@@ -56,11 +56,11 @@ def loginToHome(msb_password):
 
 def homeToDispatch():
     #click dispatch
-    makeMove('../gui_image/msb_img/dispatch_btn.png', confid=0.85)
+    makeMove('../gui_image/msb_img/dispatch_btn.png', confid=0.9)
     #wait for dispatch page
     wait('../gui_image/msb_img/dispatch_linehaul_btn.png')
     #click linehaul
-    makeMove('../gui_image/msb_img/dispatch_linehaul_btn.png', confid=0.85)
+    makeMove('../gui_image/msb_img/dispatch_linehaul_btn.png', confid=0.9)
 
 
 
@@ -74,7 +74,7 @@ def makeMove(filepath, confid=0.78):
 
         else:
             print(f"Image found at: {imageToClick}")
-            pyautogui.moveTo(imageToClick.x, imageToClick.y, duration=1)
+            pyautogui.moveTo(imageToClick.x, imageToClick.y, duration=0.5)
             pyautogui.leftClick()
 
     except pyautogui.ImageNotFoundException:
