@@ -1,23 +1,28 @@
 import pyautogui
 import time
+import sys
 import os
 from dotenv import load_dotenv
 
-def startBot():
+def startMSBBot():
+    #confirm its in chans hand now
     cont = pyautogui.confirm(text='Wanna go full retard?', title='automate linehaul test', buttons=['ok', 'cancel'])
 
     if 'ok' not in cont:
         pyautogui.alert(text='ok', title='wow', button='ok')
         exit(1)
 
+    #setup
     pyautogui.PAUSE = 0.5
     pyautogui.FAILSAFE = True
     load_dotenv()
     msb_password = os.getenv("MSB_PASSWORD")
 
-    loginToHome(msb_password)
+
+    #driver
+    login_to_home(msb_password)
     time.sleep(1)
-    homeToDispatch()
+    home_to_dispatch()
 
     cont = pyautogui.confirm(text='Are you sure you want the Chan to continue to make linehauls?', title='automate linehaul test', buttons=['ok', 'cancel'])
 
@@ -25,17 +30,26 @@ def startBot():
         pyautogui.alert(text='ok', title='the chan needs to know', button='ok')
         exit(1)
 
-def loginToHome(msb_password):
+def login_to_home(msb_password):
+    #location images
+    base_path = get_base_path()
+    msb_icon_1 = os.path.join(base_path, 'gui_image', 'msb_img', 'msb_icon_1.png')
+    login_1 = os.path.join(base_path, 'gui_image', 'msb_img', 'login_1.png')
+    login_1_btn= os.path.join(base_path, 'gui_image', 'msb_img', 'login_1_btn.png')
+    login_2 = os.path.join(base_path, 'gui_image', 'msb_img', 'login_2.png')
+    printer_setup_1 = os.path.join(base_path, 'gui_image', 'msb_img', 'printer_setup_1')
+    dispatch_btn = os.path.join(base_path, 'gui_image', 'msb_img', 'dispatch_btn.png')
+
 
     pyautogui.alert(text="Here we go now...")
     #click icon
-    makeMove('../gui_image/msb_img/msb_icon_1.png')
+    make_move(msb_icon_1)
     #wait for load
-    wait('../gui_image/msb_img/login_1.png')
+    wait(login_1)
     #click login
-    makeMove('../gui_image/msb_img/login_1_btn.PNG')
+    make_move(login_1_btn)
     #wait login 2
-    wait('../gui_image/msb_img/login_2.png')
+    wait(login_2)
     #type password
     pyautogui.typewrite(msb_password, interval=0.125)
     #click ok
@@ -43,29 +57,33 @@ def loginToHome(msb_password):
     pyautogui.press('tab')
     pyautogui.press('tab')
     pyautogui.press('enter')
-#    makeMove('./gui_image/msb_img/login_2_submit_btn.png')
 
     #wait for printer screen
-    wait('../gui_image/msb_img/printer_setup_1.png')
+    wait(printer_setup_1)
     #press enter
     time.sleep(1)
     pyautogui.press('enter')
     #wait for home page
-    wait('../gui_image/msb_img/dispatch_btn.png')
+    wait(dispatch_btn)
 
 
-def homeToDispatch():
+def home_to_dispatch():
+    #location images
+    base_path = get_base_path()
+    dispatch_btn = os.path.join(base_path, 'gui_image', 'msb_img', 'dispatch_btn.png')
+    dispatch_linehaul_btn = os.path.join(base_path, 'gui_image', 'msb_img', 'dispatch_linehaul_btn.png')
+
     #click dispatch
-    makeMove('../gui_image/msb_img/dispatch_btn.png', confid=0.95)
+    make_move('../gui_image/msb_img/dispatch_btn.png', confid=0.95)
     #wait for dispatch page
     wait('../gui_image/msb_img/dispatch_linehaul_btn.png')
     #click linehaul
-    makeMove('../gui_image/msb_img/dispatch_linehaul_btn.png', confid=0.95)
+    make_move('../gui_image/msb_img/dispatch_linehaul_btn.png', confid=0.95)
 
 
 
 
-def makeMove(filepath, confid=0.78):
+def make_move(filepath, confid=0.78):
     try:
         imageToClick = pyautogui.locateCenterOnScreen(filepath, confidence=confid)
         if imageToClick is None:
@@ -114,5 +132,12 @@ def wait(image_path, timeout=30) -> bool:
         pyautogui.alert(text=f"Timed out waiting for image {image_path}\n Bailing out...")
         exit()
 
+def get_base_path():
+    if getattr(sys, 'frozen', False):
+        return sys._MEIPASS
+    else:
+        return os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+
+
 if __name__ == "__main__":
-    startBot()
+    startMSBBot()

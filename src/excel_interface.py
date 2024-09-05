@@ -2,7 +2,7 @@ import sys
 import time
 import warnings
 import pandas as pd
-from automation_test import bookseaspan
+from src.seaspan_booking import bookseaspan
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:

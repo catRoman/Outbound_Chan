@@ -1,12 +1,10 @@
 from tkinter import *
 import sys
-
 import os
+from msb_interface import startMSBBot
 
 
-
-
-def main():
+def startGui():
     root = Tk()
     root.title("The Chan")
     if getattr(sys, 'frozen', False):
@@ -15,9 +13,10 @@ def main():
     else:
     # Running as a script
         base_path = os.path.dirname(__file__)
+        base_path = os.path.abspath(os.path.join(base_path, '..'))
 
-    icon_path = os.path.join(base_path, 'chan_img.ico')
-   
+    icon_path = os.path.join(base_path, 'gui_image', 'chan_gui', 'chan_img.ico')
+
     root.iconbitmap(icon_path)
     root.geometry("400x400")
 
@@ -34,7 +33,7 @@ def main():
     message_2.config(font=("Courier", 14))
     message_2.pack(padx=10, pady=10)
 
-    automate_booking = Button(root, text="Linehaul Bookings", command=quit)
+    automate_booking = Button(root, text="Linehaul Bookings", command=startMSBBot)
     automate_booking.config(font=("Courier", 12))
     automate_booking.pack(pady=5)
 
@@ -46,15 +45,15 @@ def main():
     print_labels = Button(root, text="Print Labels", command=quit)
     print_labels.config(font=("Courier", 12))
     print_labels.pack(pady=5)
-    
+
     root.mainloop()
 
 
 def quit():
     sys.exit()
-    
+
 if __name__ == "__main__":
-    main()
+    startGui()
 
 
 

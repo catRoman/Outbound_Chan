@@ -5,7 +5,7 @@ a = Analysis(
     ['src\\chan_gui.py'],
     pathex=[],
     binaries=[],
-    datas=[('./src/chan_img.ico', '.')],
+    datas=[('gui_image', 'gui_image')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -35,5 +35,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['src\\chan_img.ico'],
+    icon=['gui_image\\chan_gui\\chan_img.ico'],
 )

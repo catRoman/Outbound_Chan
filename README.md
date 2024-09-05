@@ -56,7 +56,6 @@ Create a configuration file config.json in the root directory with the following
         "msb_config": {
         "some_setting": "value"
         },
-        "filemaker_config": {
         "some_setting": "value"
         }
     }
