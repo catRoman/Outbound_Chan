@@ -53,7 +53,7 @@ def login_to_home(msb_password):
     login_1 = os.path.join(base_path, 'assets', 'msb_img', 'login_1.png')
     login_1_btn= os.path.join(base_path, 'assets', 'msb_img', 'login_1_btn.png')
     login_2 = os.path.join(base_path, 'assets', 'msb_img', 'login_2.png')
-    printer_setup_1 = os.path.join(base_path, 'assets', 'msb_img', 'printer_setup_1')
+    printer_setup_1 = os.path.join(base_path, 'assets', 'msb_img', 'printer_setup_1.png')
     dispatch_btn = os.path.join(base_path, 'assets', 'msb_img', 'dispatch_btn.png')
 
 
@@ -94,7 +94,7 @@ def home_to_dispatch():
     #wait for dispatch page
     wait(dispatch_linehaul_btn)
     #click linehaul
-    make_move(dispatch_linehaul_btn.png, confid=0.95)
+    make_move(dispatch_linehaul_btn, confid=0.95)
 
 
 
@@ -108,7 +108,7 @@ def make_move(filepath, confid=0.78):
 
         else:
             print(f"Image found at: {imageToClick}")
-            pyautogui.moveTo(imageToClick.x, imageToClick.y, duration=0.5)
+            pyautogui.moveTo(imageToClick.x, imageToClick.y, duration=0.4)
             pyautogui.leftClick()
 
     except pyautogui.ImageNotFoundException:
