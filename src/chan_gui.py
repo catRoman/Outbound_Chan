@@ -1,12 +1,24 @@
 from tkinter import *
 import sys
 
+import os
+
+
+
 
 def main():
     root = Tk()
     root.title("The Chan")
+    if getattr(sys, 'frozen', False):
+    # Running as a bundled executable
+        base_path = sys._MEIPASS
+    else:
+    # Running as a script
+        base_path = os.path.dirname(__file__)
+
+    icon_path = os.path.join(base_path, 'chan_img.ico')
    
-    root.iconbitmap(r"C:\Users\catli\OneDrive\desktop\Chan_bot\gui_image\chan_gui\chan_img.ico")
+    root.iconbitmap(icon_path)
     root.geometry("400x400")
 
 
