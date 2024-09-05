@@ -39,12 +39,16 @@ def loginToHome(msb_password):
     #type password
     pyautogui.typewrite(msb_password, interval=0.25)
     #click ok
-    time.sleep(2)
-    makeMove('./gui_image/msb_img/login_2_submit_btn.png')
+    time.sleep(1)
+    pyautogui.press('tab')
+    pyautogui.press('tab')
+    pyautogui.press('enter')
+#    makeMove('./gui_image/msb_img/login_2_submit_btn.png')
 
     #wait for printer screen
     wait('../gui_image/msb_img/printer_setup_1.png')
     #press enter
+    time.sleep(3)
     pyautogui.press('enter')
     #wait for home page
     wait('../gui_image/msb_img/dispatch_btn.png')
