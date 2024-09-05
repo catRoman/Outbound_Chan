@@ -3,7 +3,7 @@
 
 a = Analysis(
     ['main.py'],
-    pathex=[],
+    pathex=['../env/Lib/site-packages'],
     binaries=[],
     datas=[('../assets', 'assets')],
     hiddenimports=[],
