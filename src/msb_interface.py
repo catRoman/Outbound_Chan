@@ -12,13 +12,18 @@ def start_bot():
         pyautogui.alert(text='ok', title='wow', button='ok')
         exit(1)
 
+    base_path = get_base_path()
+    msb_icon_1 = os.path.join(base_path, 'assets', 'msb_img', 'msb_icon_1.png')
     try:
-        locate_msb_icon = pyautogui.locateCenterOnScreen()
+        locate_msb_icon = pyautogui.locateCenterOnScreen(msb_icon_1)
         if locate_msb_icon is None:
             pyautogui.alert("msb icon not found, sorry chans going home")
             exit()
-    except Exception:
-            pyautogui.alert("Theres an issue, sorry chans going home")
+    except pyautogui.ImageNotFoundException:
+        pyautogui.alert(text=f"Image not found issue. Chans going home...")
+        exit()
+    except Exception as e:
+            pyautogui.alert(text=f"Theres an issue. chans going home... \n {e}")
             exit()
 
 
