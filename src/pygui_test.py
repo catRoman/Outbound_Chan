@@ -14,8 +14,13 @@ def startBot():
 
     pyautogui.alert("Here we go now...")
     #click icon
-    makeMove('../gui_image/msb_img/msb_icon.png') #click icon
+    makeMove('../gui_image/msb_img/msb_icon_1.png')
     #wait for load
+    if wait('../gui_image/msb_img/login_1.png'):
+        makeMove('../gui_image/msb_img/login_1_btn.PNG')
+        
+        
+    
     #click login
     #makeMove('./gui_test_img/four_btn.png') #click four
     #type password
@@ -36,7 +41,7 @@ def startBot():
     # press back
    # makeMove("./gui_test_img/scientific_btn.png") #click scientific
     
-    pyautogui.typewrite('8675309', interval=0.25) 
+    #pyautogui.typewrite('8675309', interval=0.25) 
 
 
 
@@ -49,7 +54,7 @@ def makeMove(filepath):
 
         else:
             pyautogui.alert("Image found at:", imageToClick)
-            pyautogui.moveTo(imageToClick.x, imageToClick.y, duration=0.25)
+            pyautogui.moveTo(imageToClick.x, imageToClick.y, duration=2)
             pyautogui.leftClick()
 
     except pyautogui.ImageNotFoundException:
@@ -59,6 +64,25 @@ def makeMove(filepath):
         pyautogui.alert(f"An error occurred: {e}")
         exit()
 
+def wait(image_path, timeout=30) -> bool:
+    start_time = time.time()
+    while time.time() - start_time < timeout:
+    # Try to locate the image on the screen
+        location = pyautogui.locateCenterOnScreen(image_path, confidence=0.78)  # confidence is optional and used for image accuracy
+        if location:
+            return location
+        time.sleep(1)  # Wait for 1 second before trying again
+        raise TimeoutError(f"Timed out waiting for {image_path}")
+
+# Wit for the image to appear and get its location
+    try:
+        location = wait(image_path)
+        pyautogui.alert(f"Found image at {location}")
+# Click on the found location
+        return True
+    except TimeoutError as e:
+        pyautogui.alert(f"Timed out waiting for image {image_path}\n Bailing out...")
+        exit()
 
 if __name__ == "__main__":
     startBot()
