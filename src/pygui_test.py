@@ -48,7 +48,7 @@ def loginToHome(msb_password):
     #wait for printer screen
     wait('../gui_image/msb_img/printer_setup_1.png')
     #press enter
-    time.sleep(3)
+    time.sleep(1)
     pyautogui.press('enter')
     #wait for home page
     wait('../gui_image/msb_img/dispatch_btn.png')
@@ -56,25 +56,25 @@ def loginToHome(msb_password):
 
 def homeToDispatch():
     #click dispatch
-    makeMove('../gui_image/msb_img/dispatch_btn.png')
+    makeMove('../gui_image/msb_img/dispatch_btn.png', confid=0.85)
     #wait for dispatch page
     wait('../gui_image/msb_img/dispatch_linehaul_btn.png')
     #click linehaul
-    makeMove('../gui_image/msb_img/dispatch_linehaul_btn.png')
+    makeMove('../gui_image/msb_img/dispatch_linehaul_btn.png', confid=0.85)
 
 
 
 
-def makeMove(filepath):
+def makeMove(filepath, confid=0.78):
     try:
-        imageToClick = pyautogui.locateCenterOnScreen(filepath, confidence=0.78)
+        imageToClick = pyautogui.locateCenterOnScreen(filepath, confidence=confid)
         if imageToClick is None:
             pyautogui.alert(text=f"{imageToClick} - Image not found on the screen. Bailing out...")
             exit()
 
         else:
             print(f"Image found at: {imageToClick}")
-            pyautogui.moveTo(imageToClick.x, imageToClick.y, duration=2)
+            pyautogui.moveTo(imageToClick.x, imageToClick.y, duration=1)
             pyautogui.leftClick()
 
     except pyautogui.ImageNotFoundException:
