@@ -7,11 +7,17 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 from datetime import datetime, timedelta
 import time
+from dotenv import load_dotenv
+import os
 
 
 
 def bookseaspan(trailer_bookings):
+    
     #setup
+    load_dotenv()
+    seaspan_username = os.getenv("SEASPAN_USERNAME")
+    seaspan_password = os.getenv("SEASPAN_PASSWORD")
     chrome_options = Options()
     chrome_options.add_argument('--log-level=3')  # 3 = ERROR
     driver = webdriver.Chrome(options=chrome_options)
@@ -37,8 +43,8 @@ def bookseaspan(trailer_bookings):
     login_btn = driver.find_element(By.ID, "ctl00_content_cmdLogin_CD")
 
     customer_radio.click()
-    username.send_keys("DIA125D")
-    passwords.send_keys("dv428664")
+    username.send_keys(seaspan_username)
+    passwords.send_keys(seaspan_password)
     time.sleep(1)
     login_btn.click()
     #make a new job

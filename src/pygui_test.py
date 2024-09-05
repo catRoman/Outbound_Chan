@@ -1,9 +1,7 @@
 import pyautogui
 import time
-
-pyautogui.PAUSE = 0.5
-pyautogui.FAILSAFE = True
-
+import os
+from dotenv import load_dotenv
 
 def startBot():
     cont = pyautogui.confirm(text='Wanna go full retard?', title='automate linehaul test', buttons=['ok', 'cancel'])
@@ -12,36 +10,53 @@ def startBot():
         pyautogui.alert(text='ok', title='wow', button='ok')
         exit(1)
 
+    pyautogui.PAUSE = 0.5
+    pyautogui.FAILSAFE = True
+    load_dotenv()
+    msb_password = os.getenv("MSB_PASSWORD")
+
+    loginToHome(msb_password)
+    time.sleep(3)
+    homeToDispatch()
+
+    cont = pyautogui.confirm(text='Are you sure you want the Chan to continue to make linehauls?', title='automate linehaul test', buttons=['ok', 'cancel'])
+
+    if 'ok' not in cont:
+        pyautogui.alert(text='ok', title='the chan needs to know', button='ok')
+        exit(1)
+
+def loginToHome(msb_password):
+
     pyautogui.alert(text="Here we go now...")
     #click icon
     makeMove('../gui_image/msb_img/msb_icon_1.png')
     #wait for load
-    if wait('../gui_image/msb_img/login_1.png'):
-        makeMove('../gui_image/msb_img/login_1_btn.PNG')
-        
-        
-    
+    wait('../gui_image/msb_img/login_1.png')
     #click login
-    #makeMove('./gui_test_img/four_btn.png') #click four
+    makeMove('../gui_image/msb_img/login_1_btn.PNG')
+    #wait login 2
+    wait('../gui_image/msb_img/login_2.png')
     #type password
+    pyautogui.typewrite(msb_password, interval=0.25)
     #click ok
-    #@makeMove("./gui_test_img/multi_btn.png") #click X
+    makeMove('./gui_image/msb_img/login_2_submit_btn.png')
+
     #wait for printer screen
+    wait('../gui_image/msb_img/printer_setup_1.png')
     #press enter
+    pyautogui.press('enter')
     #wait for home page
+    wait('../gui_image/msb_img/dispatch_btn.png')
+
+
+def homeToDispatch():
     #click dispatch
-    #makeMove("./gui_test_img/nine_btn.png") #click nine
+    makeMove('../gui_image/msb_img/dispatch_btn.png')
     #wait for dispatch page
+    wait('../gui_image/msb_img/dispatch_linehaul_btn.png')
     #click linehaul
-    #makeMove("./gui_test_img/equal_btn.png") #click equal
-    #wait for linehauls page
-    #click new
-    #makeMove("./gui_test_img/menu_btn.png") #click menu
-    #click tab then type, seaspan tab trailer# tab #driver tab 4 down clicks and enter
-    # press back
-   # makeMove("./gui_test_img/scientific_btn.png") #click scientific
-    
-    #pyautogui.typewrite('8675309', interval=0.25) 
+    makeMove('../gui_image/msb_img/dispatch_linehaul_btn.png')
+
 
 
 
