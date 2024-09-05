@@ -68,10 +68,16 @@ def wait(image_path, timeout=30) -> bool:
     start_time = time.time()
     while time.time() - start_time < timeout:
     # Try to locate the image on the screen
-        location = pyautogui.locateCenterOnScreen(image_path, confidence=0.78)  # confidence is optional and used for image accuracy
-        if location:
-            return location
-        time.sleep(1)  # Wait for 1 second before trying again
+
+        try:
+            location = pyautogui.locateCenterOnScreen(image_path, confidence=0.78)  # confidence is optional and used for image accuracy
+            if location is not None:
+                return location
+        except pyautogui.ImageNotFoundException:
+            pass
+        finally:
+            time.sleep(1)
+
         raise TimeoutError(f"Timed out waiting for {image_path}")
 
 # Wit for the image to appear and get its location
