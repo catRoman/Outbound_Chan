@@ -39,6 +39,7 @@ def loginToHome(msb_password):
     #type password
     pyautogui.typewrite(msb_password, interval=0.25)
     #click ok
+    time.sleep(2)
     makeMove('./gui_image/msb_img/login_2_submit_btn.png')
 
     #wait for printer screen
@@ -68,7 +69,7 @@ def makeMove(filepath):
             exit()
 
         else:
-            pyautogui.alert(text=f"Image found at: {imageToClick}")
+            print(f"Image found at: {imageToClick}")
             pyautogui.moveTo(imageToClick.x, imageToClick.y, duration=2)
             pyautogui.leftClick()
 
@@ -102,7 +103,7 @@ def wait(image_path, timeout=30) -> bool:
 # Wit for the image to appear and get its location
     try:
         location = wait(image_path)
-        pyautogui.alert(text=f"Found image at {location}")
+        print(f"Found image at {location}")
 # Click on the found location
         return True
     except TimeoutError as e:
