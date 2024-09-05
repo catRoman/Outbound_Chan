@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 def start_bot():
     #confirm its in chans hand now
-    cont = pyautogui.confirm(text='Wanna go full retard?', title='automate linehaul test', buttons=['ok', 'cancel'])
+    cont = pyautogui.confirm(text='Wanna go full Chan on this?', title='automate linehaul test', buttons=['ok', 'cancel'])
 
     if 'ok' not in cont:
         pyautogui.alert(text='ok', title='wow', button='ok')
