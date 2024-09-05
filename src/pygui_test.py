@@ -56,11 +56,11 @@ def loginToHome(msb_password):
 
 def homeToDispatch():
     #click dispatch
-    makeMove('../gui_image/msb_img/dispatch_btn.png', confid=0.9)
+    makeMove('../gui_image/msb_img/dispatch_btn.png', confid=0.95)
     #wait for dispatch page
     wait('../gui_image/msb_img/dispatch_linehaul_btn.png')
     #click linehaul
-    makeMove('../gui_image/msb_img/dispatch_linehaul_btn.png', confid=0.9)
+    makeMove('../gui_image/msb_img/dispatch_linehaul_btn.png', confid=0.95)
 
 
 
