@@ -15,7 +15,7 @@ def start_bot():
     base_path = get_base_path()
     msb_icon_1 = os.path.join(base_path, 'assets', 'msb_img', 'msb_icon_1.png')
     try:
-        locate_msb_icon = pyautogui.locateCenterOnScreen(msb_icon_1)
+        locate_msb_icon = pyautogui.locateCenterOnScreen(msb_icon_1, confidence=0.85)
         if locate_msb_icon is None:
             pyautogui.alert("msb icon not found, sorry chans going home")
             exit()
@@ -90,11 +90,11 @@ def home_to_dispatch():
     dispatch_linehaul_btn = os.path.join(base_path, 'assets', 'msb_img', 'dispatch_linehaul_btn.png')
 
     #click dispatch
-    make_move('../gui_image/msb_img/dispatch_btn.png', confid=0.95)
+    make_move(dispatch_btn, confid=0.95)
     #wait for dispatch page
-    wait('../gui_image/msb_img/dispatch_linehaul_btn.png')
+    wait(dispatch_linehaul_btn)
     #click linehaul
-    make_move('../gui_image/msb_img/dispatch_linehaul_btn.png', confid=0.95)
+    make_move(dispatch_linehaul_btn.png, confid=0.95)
 
 
 
