@@ -47,7 +47,6 @@ def login_to_home(msb_password):
     dispatch_btn = os.path.join(base_path, 'assets', 'msb_img', 'dispatch_btn.png')
 
 
-    pyautogui.alert(text="Here we go now...")
     #click icon
     make_move(msb_icon_1)
     #wait for load
@@ -89,10 +88,12 @@ def home_to_dispatch():
 def create_new_linehaul(trailer_bookings):
     base_path = get_base_path()
     dispatch_linehaul_new_btn = os.path.join(base_path, 'assets', 'msb_img', 'dispatch_linehaul_new_btn.png')
-
+    dispatch_empty_new_linehaul = os.path.join(base_path, 'assets', 'msb_img', 'disptach_empyt_new_linehaul.png')
 
     #click new box
-    make_move(dispatch_linehaul_new_btn, confid=0.4)
+    make_move(dispatch_linehaul_new_btn, confid=0.95)
+
+    wait(dispatch_empty_new_linehaul)
     #2 tabs
     time.sleep(0.5)
     pyautogui.press('tab')
