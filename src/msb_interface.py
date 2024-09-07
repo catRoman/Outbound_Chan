@@ -39,13 +39,15 @@ def start_bot():
     login_to_home(msb_password)
     time.sleep(1)
     home_to_dispatch()
-    create_new_linehaul()
+    
 
     cont = pyautogui.confirm(text='Are you sure you want the Chan to continue to make linehauls?', title='automate linehaul test', buttons=['ok', 'cancel'])
 
     if 'ok' not in cont:
         pyautogui.alert(text='ok', title='the chan needs to know', button='ok')
         exit(1)
+    
+    create_new_linehaul()
 
 def login_to_home(msb_password):
     #location images
