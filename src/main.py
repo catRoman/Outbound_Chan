@@ -25,7 +25,7 @@ def Linehaul_Booking():
 
     for booking in trailer_bookings:
         print(f"Linehaul: {booking}")
-        if booking['LH#'] is not None:
+        if booking['LH#'] is not "nan":
             print("Linehaul already exists, moving on")
             continue
         booking['LH#'] = msb_interface.create_new_linehaul(booking)
