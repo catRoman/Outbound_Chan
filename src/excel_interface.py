@@ -52,13 +52,19 @@ def get_book():
                     file_content = BytesIO(file_response.content)
                     #df = pd.read_excel(file_content)
 
-                    excel_book = pd.read_excel(file_content, engine='openpyxl')
+                    excel_book = pd.ExcelFile(file_content, engine='openpyxl')
                     todays_sheet = excel_book.sheet_names[0]
 
-                    if datetime.now().strftime('%b %d') == todays_sheet.strip():
-                        print("The Chan is good to go retrieveing excel info")
+                    print(f"Retrieved file content for sheet: {todays_sheet}")
+                    print(f"Today's book: {search_query}")
+                    current_date = datetime.now().strftime('%b %d')
+
+                    if current_date == todays_sheet.strip():
+                        print("The Chan retrieved excel doc from oneDrive")
                         #interfaceExcel(file_content, todays_sheet)
                         return (file_content, todays_sheet)
+                    else:
+                        print(f"Today's sheet not found in the Excel book: {todays_sheet.strip()} - {current_date}")
 
                 else:
                     print(f"Failed to fetch file content: {file_response.status_code}")
@@ -71,8 +77,13 @@ def get_book():
         print(response.json())
 
 
-def interfaceExcel(bookname, sheetname):
-    bookname, sheetname = get_book()
+def interface_excel():
+    result = get_book()
+    if result is None:
+        print("Failed to retrieve the Excel book and sheet.")
+        return
+
+    bookname, sheetname = result
 
     print(f"Excel book: {bookname}")
     print(f"ExcelSheet: {sheetname}")
@@ -131,6 +142,16 @@ def interfaceExcel(bookname, sheetname):
     print("\n")
     print(trailer_bookings)
     print("\n")
-    print("Starting trailer bookings...\n")
+    print("Starting trailer Linehauls...\n")
     time.sleep(1)
+    return trailer_bookings
    # book(trailer_bookings=trailer_bookings)
+
+def update_surrey_outbound(trailer_booking):
+    print("Updating surrey outbound")
+    print(trailer_booking)
+    
+
+
+if __name__ == "__main__":
+    interface_excel()

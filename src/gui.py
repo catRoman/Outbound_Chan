@@ -1,7 +1,7 @@
 from tkinter import *
 import sys
 import os
-from msb_interface import start_bot
+import main
 
 
 def start_gui():
@@ -33,7 +33,7 @@ def start_gui():
     message_2.config(font=("Courier", 14))
     message_2.pack(padx=10, pady=10)
 
-    automate_booking = Button(root, text="Linehaul Bookings", command=start_bot)
+    automate_booking = Button(root, text="Linehaul Bookings", command=main.Linehaul_Booking)
     automate_booking.config(font=("Courier", 12))
     automate_booking.pack(pady=5)
 

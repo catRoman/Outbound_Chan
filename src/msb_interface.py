@@ -4,7 +4,7 @@ import sys
 import os
 from dotenv import load_dotenv
 
-def start_bot():
+def start_login():
     #confirm its in chans hand now
     cont = pyautogui.confirm(text='Wanna go full Chan on this?', title='automate linehaul test', buttons=['ok', 'cancel'])
 
@@ -32,22 +32,9 @@ def start_bot():
     pyautogui.PAUSE = 0.5
     pyautogui.FAILSAFE = True
     load_dotenv()
-    msb_password = os.getenv("MSB_PASSWORD")
+    return os.getenv("MSB_PASSWORD")
 
 
-    #driver
-    login_to_home(msb_password)
-    time.sleep(1)
-    home_to_dispatch()
-    
-
-    #cont = pyautogui.confirm(text='Are you sure you want the Chan to continue to make linehauls?', title='automate linehaul test', buttons=['ok', 'cancel'])
-
-#    if 'ok' not in cont:
- #       pyautogui.alert(text='ok', title='the chan needs to know', button='ok')
-  #      exit(1)
-    
-    create_new_linehaul()
 
 def login_to_home(msb_password):
     #location images
@@ -99,7 +86,7 @@ def home_to_dispatch():
     #click linehaul
     make_move(dispatch_linehaul_btn, confid=0.95)
 
-def create_new_linehaul():
+def create_new_linehaul(trailer_bookings):
     base_path = get_base_path()
     dispatch_linehaul_new_btn = os.path.join(base_path, 'assets', 'msb_img', 'dispatch_linehaul_new_manifests_btn.png')
 
@@ -114,7 +101,7 @@ def create_new_linehaul():
     pyautogui.typewriter("SEASPAN", interval=0.5)
     pyautogui.press('tab')
     #send trailer, tab
-    pyautogui.typewriter("HVR2013R", interval=0.5)
+    pyautogui.typewriter(trailer_bookings["Trailer"], interval=0.5)
     pyautogui.press('tab')
     #send driver number
     pyautogui.typewriter("926", interval=0.5)
@@ -129,6 +116,10 @@ def create_new_linehaul():
     pyautogui.press('down')
     #send enter
     pyautogui.press('enter')
+
+    #get line haul from number opencv
+    linehaul = "123456"
+    return  linehaul
 
 
 
@@ -191,4 +182,4 @@ def get_base_path():
 
 
 if __name__ == "__main__":
-    start_bot()
+    start_login()
