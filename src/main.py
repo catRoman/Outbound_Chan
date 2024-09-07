@@ -1,11 +1,17 @@
 import excel_interface
 import msb_interface
 import time
+import sys
+from treading import Thread
 
 
-if __name__ == "__main__":
-    from gui import start_gui
-    start_gui()
+
+
+def print_concurrent_output():
+    while True:
+        print("This is concurrent output in the terminal")
+        sys.stdout.flush()  # Force flush the output buffer to ensure it appears in real-time
+        time.sleep(2)  # Simulate some ongoing terminal output
 
 def Linehaul_Booking():
     print("Starting onedrive sync with workbook")
@@ -34,3 +40,10 @@ def Linehaul_Booking():
 
     print("Linehaul booking complete, updating workbook")
     excel_interface.update_surrey_outbound(trailer_bookings)
+
+
+if __name__ == "__main__":
+    from gui import start_gui
+    output_thread = Thread(target=print_concurrent_output, daemon=True)
+    output_thread.start()
+    start_gui()
