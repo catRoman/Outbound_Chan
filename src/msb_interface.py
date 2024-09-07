@@ -39,6 +39,7 @@ def start_bot():
     login_to_home(msb_password)
     time.sleep(1)
     home_to_dispatch()
+    create_new_linehaul()
 
     cont = pyautogui.confirm(text='Are you sure you want the Chan to continue to make linehauls?', title='automate linehaul test', buttons=['ok', 'cancel'])
 
@@ -96,7 +97,7 @@ def home_to_dispatch():
     #click linehaul
     make_move(dispatch_linehaul_btn, confid=0.95)
 
-def create_new_linehaul(trailer_list: list[dict]):
+def create_new_linehaul():
     base_path = get_base_path()
     dispatch_linehaul_new_btn = os.path.join(base_path, 'assets', 'msb_img', 'dispatch_linehaul_new_manifests_btn.png')
 
