@@ -92,7 +92,7 @@ def create_new_linehaul(trailer_bookings):
 
 
     #click new box
-    make_move(dispatch_linehaul_new_btn)
+    make_move(dispatch_linehaul_new_btn, confid=0.4)
     #2 tabs
     time.sleep(0.5)
     pyautogui.press('tab')
