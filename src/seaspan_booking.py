@@ -96,7 +96,7 @@ def book(trailer_bookings):
             print(f"Modal not present, continuing booking")
         length.send_keys("53")
         route.send_keys("Swartz Bay > Tilbury")
-        po_number.send_keys(str(int(booking['LH#'])))
+        po_number.send_keys(booking['LH#'])
 
         #tomorrows dat unless friday then monday
         adjusted_date = get_adjusted_date()
