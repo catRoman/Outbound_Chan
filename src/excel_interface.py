@@ -121,13 +121,13 @@ def interface_excel():
     for index, row in surrey_outbound_table.iterrows():
         if row.notna().any():
             print(row)
-            if (pd.isna(row['Trailer']) or
-                pd.isna(row['Contents']) or
-                pd.isna(row["LH#"])  or
-                pd.isna(row['Sailing']) or
-                pd.isna(row['Driver'])):
-                    print(f"Sailing info incomplete - unable to make booking")
-            elif pd.isna(row['BOL']):
+            if (pd.isna(row['Trailer']) ):
+                #pd.isna(row['Contents']) or
+                #pd.isna(row["LH#"])  or
+                #pd.isna(row['Sailing']) or
+                #pd.isna(row['Driver'])):
+                    print(f"Trailer info incomplete - unable to make lineaul")
+            elif pd.isna(row['LH#']):
                 print("booking needed -- adding dataframe as dictionary to list")
                 row_dict = row.to_dict()
 
@@ -150,7 +150,7 @@ def interface_excel():
 def update_surrey_outbound(trailer_booking):
     print("Updating surrey outbound")
     print(trailer_booking)
-    
+
 
 
 if __name__ == "__main__":
