@@ -1,10 +1,10 @@
-from gui import start_gui
 from excel_interface import interface_excel
 import excel_interface
 import time
 
 
 if __name__ == "__main__":
+    from gui import start_gui
     start_gui()
 
 def Linehaul_Booking():
