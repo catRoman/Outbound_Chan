@@ -9,9 +9,8 @@ from threading import Thread
 
 def print_concurrent_output():
     while True:
-        print("This is concurrent output in the terminal")
-        sys.stdout.flush()  # Force flush the output buffer to ensure it appears in real-time
-        time.sleep(2)  # Simulate some ongoing terminal output
+        sys.stdout.flush()
+
 
 def Linehaul_Booking():
     print("Starting onedrive sync with workbook")
