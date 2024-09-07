@@ -2,7 +2,7 @@ import excel_interface
 import msb_interface
 import time
 import sys
-from treading import Thread
+from threading import Thread
 
 
 
