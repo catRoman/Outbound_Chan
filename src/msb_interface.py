@@ -78,7 +78,7 @@ def home_to_dispatch():
     dispatch_btn = os.path.join(base_path, 'assets', 'msb_img', 'dispatch_btn.png')
     dispatch_linehaul_btn = os.path.join(base_path, 'assets', 'msb_img', 'dispatch_linehaul_btn.png')
 
-    #click dispatch
+    #click dispatch:wq
     make_move(dispatch_btn, confid=0.95)
     #wait for dispatch page
     wait(dispatch_linehaul_btn)
@@ -88,10 +88,10 @@ def home_to_dispatch():
 def create_new_linehaul(trailer_bookings):
     base_path = get_base_path()
     dispatch_linehaul_new_btn = os.path.join(base_path, 'assets', 'msb_img', 'dispatch_linehaul_new_btn.png')
-    dispatch_empty_new_linehaul = os.path.join(base_path, 'assets', 'msb_img', 'disptach_empyt_new_linehaul.png')
+    dispatch_empty_new_linehaul = os.path.join(base_path, 'assets', 'msb_img', 'dispatch_empty_new_linehaul.png')
 
     #click new box
-    make_move(dispatch_linehaul_new_btn, confid=0.95)
+    make_move(dispatch_linehaul_new_btn, confid=0.10, reg=(120,40,100,100))
 
     wait(dispatch_empty_new_linehaul)
     #2 tabs
@@ -126,12 +126,12 @@ def create_new_linehaul(trailer_bookings):
 
 
 
-def make_move(filepath, confid=0.78):
+def make_move(filepath, confid=0.78, reg=(0,0, *pyautogui.size())):
     try:
-        imageToClick = pyautogui.locateCenterOnScreen(filepath, confidence=confid)
+        imageToClick = pyautogui.locateCenterOnScreen(filepath, region=reg, confidence=confid)
         if imageToClick is None:
             pyautogui.alert(text=f"{imageToClick} - Image not found on the screen. Bailing out...")
-            exit()
+            sys.exit()
 
         else:
             print(f"Image found at: {imageToClick}")
@@ -140,10 +140,10 @@ def make_move(filepath, confid=0.78):
 
     except pyautogui.ImageNotFoundException:
         pyautogui.alert(text=f"{imageToClick} - Image not found exception.Bailing out...")
-        exit()
+        sys.exit()
     except Exception as e:
         pyautogui.alert(text=f"An error occurred: {e}")
-        exit()
+        sys.exit()
 
 def wait(image_path, timeout=30) -> bool:
     start_time = time.time()
@@ -158,7 +158,7 @@ def wait(image_path, timeout=30) -> bool:
             pass
         except Exception as e:
             pyautogui.alert(text=f"An error occurred: {e}")
-            exit()
+            sys.exit()
 
         time.sleep(1)
 
@@ -173,7 +173,7 @@ def wait(image_path, timeout=30) -> bool:
         return True
     except TimeoutError as e:
         pyautogui.alert(text=f"Timed out waiting for image {image_path}\n Bailing out...")
-        exit()
+        sys.exit()
 
 def get_base_path():
     if getattr(sys, 'frozen', False):
