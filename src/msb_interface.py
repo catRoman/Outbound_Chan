@@ -41,11 +41,11 @@ def start_bot():
     home_to_dispatch()
     
 
-    cont = pyautogui.confirm(text='Are you sure you want the Chan to continue to make linehauls?', title='automate linehaul test', buttons=['ok', 'cancel'])
+    #cont = pyautogui.confirm(text='Are you sure you want the Chan to continue to make linehauls?', title='automate linehaul test', buttons=['ok', 'cancel'])
 
-    if 'ok' not in cont:
-        pyautogui.alert(text='ok', title='the chan needs to know', button='ok')
-        exit(1)
+#    if 'ok' not in cont:
+ #       pyautogui.alert(text='ok', title='the chan needs to know', button='ok')
+  #      exit(1)
     
     create_new_linehaul()
 
