@@ -108,12 +108,24 @@ def create_new_linehaul(trailer_list: list[dict]):
     pyautogui.press('tab')
     pyautogui.press('tab')
     #send seaspan, tab
-    #pyautogui.typewriter(trailer_list[]
+    pyautogui.typewriter("SEASPAN", interval=0.5)
     pyautogui.press('tab')
     #send trailer, tab
+    pyautogui.typewriter("HVR2013R", interval=0.5)
+    pyautogui.press('tab')
     #send driver number
+    pyautogui.typewriter("926", interval=0.5)
+    pyautogui.press('tab')
     #send tab + 6 down strokes
+    pyautogui.press('down')
+    pyautogui.press('down')
+    pyautogui.press('down')
+    pyautogui.press('down')
+    pyautogui.press('down')
+    pyautogui.press('down')
+    pyautogui.press('down')
     #send enter
+    pyautogui.press('enter')
 
 
 
