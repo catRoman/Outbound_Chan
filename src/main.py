@@ -1,5 +1,5 @@
-from excel_interface import interface_excel
 import excel_interface
+import msb_interface
 import time
 
 
@@ -9,18 +9,18 @@ if __name__ == "__main__":
 
 def Linehaul_Booking():
     print("Starting onedrive sync with workbook")
-    trailer_bookings = interface_excel()
+    trailer_bookings = excel_interface.interface_excel()
 
     print("Starting linehaul booking...")
 
     #driver
     print("Starting MSB login...")
-    msb_password = excel_interface.start_login()
+    msb_password = msb_interface.start_login()
     print("MSB login successful")
     print("Moving to MSB home page...")
-    excel_interface.login_to_home(msb_password)
+    msb_interface.login_to_home(msb_password)
     print("Moving to MSB dispatch page...")
-    excel_interface.home_to_dispatch()
+    msb_interface.home_to_dispatch()
     print("Creating new linehaul...")
 
     for booking in trailer_bookings:
@@ -28,7 +28,7 @@ def Linehaul_Booking():
         if booking['LH#'] is not None:
             print("Linehaul already exists, moving on")
             continue
-        booking['LH#'] = excel_interface.create_new_linehaul(booking)
+        booking['LH#'] = msb_interface.create_new_linehaul(booking)
         print("Linehaul created")
         time.sleep(1)
 
