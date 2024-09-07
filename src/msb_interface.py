@@ -88,7 +88,7 @@ def home_to_dispatch():
 
 def create_new_linehaul(trailer_bookings):
     base_path = get_base_path()
-    dispatch_linehaul_new_btn = os.path.join(base_path, 'assets', 'msb_img', 'dispatch_linehaul_new_manifests_btn.png')
+    dispatch_linehaul_new_btn = os.path.join(base_path, 'assets', 'msb_img', 'dispatch_linehaul_new_btn.png')
 
 
     #click new box
@@ -98,13 +98,13 @@ def create_new_linehaul(trailer_bookings):
     pyautogui.press('tab')
     pyautogui.press('tab')
     #send seaspan, tab
-    pyautogui.typewriter("SEASPAN", interval=0.5)
+    pyautogui.typewrite("SEASPAN", interval=0.5)
     pyautogui.press('tab')
     #send trailer, tab
-    pyautogui.typewriter(trailer_bookings["Trailer"], interval=0.5)
+    pyautogui.typewrite(trailer_bookings["Trailer"], interval=0.5)
     pyautogui.press('tab')
     #send driver number
-    pyautogui.typewriter("926", interval=0.5)
+    pyautogui.typewrite("926", interval=0.5)
     pyautogui.press('tab')
     #send tab + 6 down strokes
     pyautogui.press('down')
