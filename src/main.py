@@ -15,7 +15,7 @@ def print_concurrent_output():
 
 
 def Linehaul_Booking():
-    logging.info("Starting onedrive sync with workbook")
+    logging.info("Starting oneDrive sync with workbook")
     trailer_bookings = excel_interface.interface_excel()
 
     logging.info("Starting linehaul booking...")

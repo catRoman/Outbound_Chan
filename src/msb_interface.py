@@ -12,8 +12,7 @@ def start_login():
     cont = pyautogui.confirm(text='Wanna go full Chan on this?', title='automate linehaul test', buttons=['ok', 'cancel'])
 
     if 'ok' not in cont:
-        pyautogui.alert(text='ok', title='wow', button='ok')
-        sys.exit(1)
+        sys.exit(0)
 
     base_path = get_base_path()
     msb_icon_1 = os.path.join(base_path, 'assets', 'msb_img', 'msb_icon_1.png')
