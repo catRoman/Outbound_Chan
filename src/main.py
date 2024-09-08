@@ -21,14 +21,9 @@ def Linehaul_Booking():
     logging.info("Starting linehaul booking...")
 
     #driver
-    logging.info("Starting MSB login...")
     msb_password = msb_interface.start_login()
-    logging.info("MSB login successful")
-    logging.info("Moving to MSB home page...")
     msb_interface.login_to_home(msb_password)
-    logging.info("Moving to MSB dispatch page...")
     msb_interface.home_to_dispatch()
-    logging.info("Creating new linehaul...")
 
     for booking in trailer_bookings:
         logging.info(f"Linehaul: {booking}")

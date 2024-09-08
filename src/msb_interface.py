@@ -4,6 +4,7 @@ import sys
 import os
 from dotenv import load_dotenv
 import logging
+import msb_scanner
 
 logging = logging.getLogger(__name__)
 
@@ -72,6 +73,7 @@ def login_to_home(msb_password):
     pyautogui.press('enter')
     #wait for home page
     wait(dispatch_btn)
+    logging.info("MSB login successful")
 
 
 def home_to_dispatch():
@@ -102,13 +104,13 @@ def create_new_linehaul(trailer_bookings):
     pyautogui.press('tab')
     pyautogui.press('tab')
     #send seaspan, tab
-    pyautogui.typewrite("SEASPAN", interval=0.5)
+    pyautogui.typewrite("SEASPAN", interval=0.1)
     pyautogui.press('tab')
     #send trailer, tab
-    pyautogui.typewrite(trailer_bookings["Trailer"], interval=0.5)
+    pyautogui.typewrite(trailer_bookings["Trailer"], interval=0.1)
     pyautogui.press('tab')
     #send driver number
-    pyautogui.typewrite("926", interval=0.5)
+    pyautogui.typewrite("926", interval=0.1)
     pyautogui.press('tab')
     #send tab + 6 down strokes
     pyautogui.press('down')
@@ -121,8 +123,10 @@ def create_new_linehaul(trailer_bookings):
     pyautogui.press('enter')
 
     #get line haul from number opencv
-    linehaul = "123456"
-    return  linehaul
+    screenshot = pyautogui.screenshot("linehaul.png")
+    linehaul_num = msb_scanner.scan_linehaul_number(screenshot)
+
+    return  linehaul_num
 
 
 
@@ -165,9 +169,9 @@ def wait(image_path, timeout=30):
         time.sleep(1)
 
 
-    raise TimeoutError(f"Timed out waiting for {image_path}")
     logging.critical(f"Timed out waiting for {image_path}")
     sys.exit(1)
+
 
 def get_base_path():
     if getattr(sys, 'frozen', False):
