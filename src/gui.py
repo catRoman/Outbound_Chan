@@ -2,9 +2,13 @@ from tkinter import *
 import sys
 import os
 from main import Linehaul_Booking
+import logging
+
+logging = logging.getLogger(__name__)
 
 
 def start_gui():
+    logging.info("Starting GUI")
     root = Tk()
     root.title("The Chan")
     if getattr(sys, 'frozen', False):
@@ -50,6 +54,7 @@ def start_gui():
 
 
 def quit():
+    logging.info("Quitting GUI")
     sys.exit()
 
 if __name__ == "__main__":

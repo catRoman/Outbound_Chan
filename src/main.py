@@ -3,8 +3,10 @@ import msb_interface
 import time
 import sys
 from threading import Thread
+import logging
 
 
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 def print_concurrent_output():
@@ -13,36 +15,42 @@ def print_concurrent_output():
 
 
 def Linehaul_Booking():
-    print("Starting onedrive sync with workbook")
+    logging.info("Starting onedrive sync with workbook")
     trailer_bookings = excel_interface.interface_excel()
 
-    print("Starting linehaul booking...")
+    logging.info("Starting linehaul booking...")
 
     #driver
-    print("Starting MSB login...")
+    logging.info("Starting MSB login...")
     msb_password = msb_interface.start_login()
-    print("MSB login successful")
-    print("Moving to MSB home page...")
+    logging.info("MSB login successful")
+    logging.info("Moving to MSB home page...")
     msb_interface.login_to_home(msb_password)
-    print("Moving to MSB dispatch page...")
+    logging.info("Moving to MSB dispatch page...")
     msb_interface.home_to_dispatch()
-    print("Creating new linehaul...")
+    logging.info("Creating new linehaul...")
 
     for booking in trailer_bookings:
-        print(f"Linehaul: {booking}")
+        logging.info(f"Linehaul: {booking}")
         if booking['LH#'] == "nan":
-            print("Linehaul already exists, moving on")
+            logging.info("Linehaul already exists, moving on")
             continue
         booking['LH#'] = msb_interface.create_new_linehaul(booking)
-        print("Linehaul created")
+        logging.info("Linehaul created")
         time.sleep(1)
 
-    print("Linehaul booking complete, updating workbook")
+    logging.info("Linehaul booking complete, updating workbook")
+    logging.info(trailer_bookings)
     excel_interface.update_surrey_outbound(trailer_bookings)
 
+def main():
 
-if __name__ == "__main__":
     from gui import start_gui
+    logging.info("Starting logging thread")
     output_thread = Thread(target=print_concurrent_output, daemon=True)
     output_thread.start()
     start_gui()
+
+
+if __name__ == "__main__":
+    main

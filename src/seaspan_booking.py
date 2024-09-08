@@ -9,12 +9,14 @@ from datetime import datetime, timedelta
 import time
 from dotenv import load_dotenv
 import os
+import logging
 
-
+logging = logging.getLogger(__name__)
 
 def book(trailer_bookings):
 
     #setup
+    logging.info("accessing user credentials")
     load_dotenv()
     seaspan_username = os.getenv("SEASPAN_USERNAME")
     seaspan_password = os.getenv("SEASPAN_PASSWORD")
@@ -64,7 +66,7 @@ def book(trailer_bookings):
 
     #new job fields
     unit_number = WebDriverWait(driver, 10).until(
-        EC.visibility_of_element_located((By.ID,"ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_txtUnitNumber_I")))
+    EC.visibility_of_element_located((By.ID,"ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_txtUnitNumber_I")))
     unit_type = driver.find_element(By.ID,"ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_cmbContainerType_I")
     length = driver.find_element(By.ID,"ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_seLength_I")
     route = driver.find_element(By.ID,"ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_cmbRoute_I")
@@ -82,7 +84,7 @@ def book(trailer_bookings):
     #loop through booking list and populate
     time.sleep(1)
     for index, booking in enumerate(trailer_bookings):
-        print(f"Booking trailer: {booking['Trailer']}")
+        logging.info(f"Booking trailer: {booking['Trailer']}")
         unit_number.send_keys(booking['Trailer'])
         try:
             unit_type.send_keys("Van");
@@ -91,9 +93,9 @@ def book(trailer_bookings):
 
             close_btn = modal.find_element(By.ID, 'ctl00_content_puUnitSearch_PopupControlSFCUnitSearch_HCB-1')
             close_btn.click()
-            print(f"Modal closed, continuing booking")
+            logging.debug(f"Modal closed, continuing booking")
         except Exception as e:
-            print(f"Modal not present, continuing booking")
+            logging.debug(f"Modal not present, continuing booking")
         length.send_keys("53")
         route.send_keys("Swartz Bay > Tilbury")
         po_number.send_keys(booking['LH#'])
@@ -130,7 +132,7 @@ def book(trailer_bookings):
         bol_number = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.ID,"ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_txtJobNumber_I")))
 
-        print(f"bol#: {bol_number.get_attribute('value')}")
+        logging.info(f"bol#: {bol_number.get_attribute('value')}")
 
         if index == len(trailer_bookings)-1:
             break
@@ -142,7 +144,7 @@ def book(trailer_bookings):
         time.sleep(2)
 
 
-    print("bookings finished ending script...")
+    logging.info("seaspan bookings complete...")
 
     driver.quit()
 

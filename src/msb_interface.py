@@ -3,6 +3,9 @@ import time
 import sys
 import os
 from dotenv import load_dotenv
+import logging
+
+logging = logging.getLogger(__name__)
 
 def start_login():
     #confirm its in chans hand now
@@ -10,7 +13,7 @@ def start_login():
 
     if 'ok' not in cont:
         pyautogui.alert(text='ok', title='wow', button='ok')
-        exit(1)
+        sys.exit(1)
 
     base_path = get_base_path()
     msb_icon_1 = os.path.join(base_path, 'assets', 'msb_img', 'msb_icon_1.png')
@@ -18,13 +21,13 @@ def start_login():
         locate_msb_icon = pyautogui.locateCenterOnScreen(msb_icon_1, confidence=0.85)
         if locate_msb_icon is None:
             pyautogui.alert("msb icon not found, sorry chans going home")
-            exit()
+            sys.exit()
     except pyautogui.ImageNotFoundException:
         pyautogui.alert(text=f"Image not found issue. Chans going home...")
-        exit()
+        sys.exit()
     except Exception as e:
             pyautogui.alert(text=f"Theres an issue. chans going home... \n {e}")
-            exit()
+            sys.exit()
 
 
 
@@ -46,7 +49,7 @@ def login_to_home(msb_password):
     printer_setup_1 = os.path.join(base_path, 'assets', 'msb_img', 'printer_setup_1.png')
     dispatch_btn = os.path.join(base_path, 'assets', 'msb_img', 'dispatch_btn.png')
 
-
+    logging.info("Starting MSB login...")
     #click icon
     make_move(msb_icon_1)
     #wait for load
@@ -77,7 +80,7 @@ def home_to_dispatch():
     base_path = get_base_path()
     dispatch_btn = os.path.join(base_path, 'assets', 'msb_img', 'dispatch_btn.png')
     dispatch_linehaul_btn = os.path.join(base_path, 'assets', 'msb_img', 'dispatch_linehaul_btn.png')
-
+    logging.info("Moving to MSB dispatch page...")
     #click dispatch:wq
     make_move(dispatch_btn, confid=0.95)
     #wait for dispatch page
@@ -90,6 +93,7 @@ def create_new_linehaul(trailer_bookings):
     dispatch_linehaul_new_btn = os.path.join(base_path, 'assets', 'msb_img', 'dispatch_linehaul_new_btn.png')
     dispatch_empty_new_linehaul = os.path.join(base_path, 'assets', 'msb_img', 'dispatch_empty_new_linehaul.png')
 
+    logging.info(f"Creating {trailer_bookings["Trailer"]} linehaul...")
     #click new box
     make_move(dispatch_linehaul_new_btn, confid=0.10, reg=(120,40,100,100))
 
@@ -114,7 +118,6 @@ def create_new_linehaul(trailer_bookings):
     pyautogui.press('down')
     pyautogui.press('down')
     pyautogui.press('down')
-    pyautogui.press('down')
     #send enter
     pyautogui.press('enter')
 
@@ -130,50 +133,42 @@ def make_move(filepath, confid=0.78, reg=(0,0, *pyautogui.size())):
     try:
         imageToClick = pyautogui.locateCenterOnScreen(filepath, region=reg, confidence=confid)
         if imageToClick is None:
-            pyautogui.alert(text=f"{imageToClick} - Image not found on the screen. Bailing out...")
-            sys.exit()
+            logging.critical("{imageToClick} - Image not found on the screen. Bailing out...")
+            sys.exit(1)
 
         else:
-            print(f"Image found at: {imageToClick}")
+            logging.debug(f"Image found at: {imageToClick}")
             pyautogui.moveTo(imageToClick.x, imageToClick.y, duration=0.4)
             pyautogui.leftClick()
 
     except pyautogui.ImageNotFoundException:
-        pyautogui.alert(text=f"{imageToClick} - Image not found exception.Bailing out...")
-        sys.exit()
+        logging.critical(f"{imageToClick} - Image not found exception.Bailing out...")
+        sys.exit(1)
     except Exception as e:
-        pyautogui.alert(text=f"An error occurred: {e}")
-        sys.exit()
+        logging.critical(f"An error occurred: {e}")
+        sys.exit(1)
 
-def wait(image_path, timeout=30) -> bool:
+def wait(image_path, timeout=30):
     start_time = time.time()
     while time.time() - start_time < timeout:
     # Try to locate the image on the screen
-
         try:
             location = pyautogui.locateCenterOnScreen(image_path, confidence=0.78)  # confidence is optional and used for image accuracy
             if location is not None:
-                return location
+                logging.debug(f"Found image at {location}")
+                return True
         except pyautogui.ImageNotFoundException:
             pass
         except Exception as e:
-            pyautogui.alert(text=f"An error occurred: {e}")
-            sys.exit()
+            logging.critical(f"An error occurred: {e}")
+            sys.exit(1)
 
         time.sleep(1)
 
 
     raise TimeoutError(f"Timed out waiting for {image_path}")
-
-# Wit for the image to appear and get its location
-    try:
-        location = wait(image_path)
-        print(f"Found image at {location}")
-# Click on the found location
-        return True
-    except TimeoutError as e:
-        pyautogui.alert(text=f"Timed out waiting for image {image_path}\n Bailing out...")
-        sys.exit()
+    logging.critical(f"Timed out waiting for {image_path}")
+    sys.exit(1)
 
 def get_base_path():
     if getattr(sys, 'frozen', False):

@@ -8,6 +8,9 @@ import requests
 import pandas as pd
 from io import BytesIO
 from oauth import get_OAuth_token
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 
@@ -16,7 +19,7 @@ def get_book():
 
     # Define constants
     search_query = f'{datetime.now().strftime('%b')}-Obws.xlsm'  # File name to search for
-    print("authenticating")
+    logging.info("authenticating")
     access_token = get_OAuth_token()
     # Define the API endpoint
     graph_api_url = f"https://graph.microsoft.com/v1.0/me/drive/root/search(q='{search_query}')"
@@ -27,22 +30,22 @@ def get_book():
     }
 
     # Make the request to search for the file
-    print(f"Searching for file: {search_query}")
+    logging.info(f"Searching for file: {search_query}")
     response = requests.get(graph_api_url, headers=headers)
 
     if response.status_code == 200:
         results = response.json().get('value', [])
         if results:
-            print(f"Found {len(results)} file(s).")
+            logging.info(f"Found {len(results)} file(s).")
             for item in results:
                 file_name = item['name']
                 parent_reference = item.get('parentReference', {})
                 file_path = parent_reference.get('path', 'Root Directory')
-                print(f"Found file: {file_name} at {file_path}")
+                logging.info(f"Found file: {file_name} at {file_path}")
                 # You can store the item ID or path for further operations
                 file_id = item['id']
                 full_path = f"{file_path}/{file_name}" if file_path != 'Root Directory' else file_name
-                print(f"File ID: {file_id}, Full Path: {full_path}")
+                logging.info(f"File ID: {file_id}, Full Path: {full_path}")
 
                 # Fetch the file content
                 file_content_url = f"https://graph.microsoft.com/v1.0/me/drive/items/{file_id}/content"
@@ -55,41 +58,40 @@ def get_book():
                     excel_book = pd.ExcelFile(file_content, engine='openpyxl')
                     todays_sheet = excel_book.sheet_names[0]
 
-                    print(f"Retrieved file content for sheet: {todays_sheet}")
-                    print(f"Today's book: {search_query}")
+                    logging.info(f"Retrieved file content for sheet: {todays_sheet}")
+                    logging.info(f"Today's book: {search_query}")
                     current_date = datetime.now().strftime('%b %d')
 
                     if current_date == todays_sheet.strip():
-                        print("The Chan retrieved excel doc from oneDrive")
+                        logging.info("The Chan retrieved excel doc from oneDrive")
                         #interfaceExcel(file_content, todays_sheet)
                         return (file_content, todays_sheet)
                     else:
-                        print(f"Today's sheet not found in the Excel book: {todays_sheet.strip()} - {current_date}")
+                        logging.error(f"Today's sheet not found in the Excel book: {todays_sheet.strip()} - {current_date}")
 
                 else:
-                    print(f"Failed to fetch file content: {file_response.status_code}")
-                    print(file_response.json())
+                    logging.error(f"Failed to fetch file content: {file_response.status_code}")
+                    logging.error(file_response.json())
 
         else:
-            print("No files found.")
+            logging.error("No files found.")
     else:
-        print(f"Failed to search files: {response.status_code}")
-        print(response.json())
+        logging.error(f"Failed to search files: {response.status_code}")
+        logging.error(response.json())
 
 
 def interface_excel():
     result = get_book()
     if result is None:
-        print("Failed to retrieve the Excel book and sheet.")
+        logging.error("Failed to retrieve the Excel book and sheet.")
         return
 
     bookname, sheetname = result
 
-    print(f"Excel book: {bookname}")
-    print(f"ExcelSheet: {sheetname}")
+    logging.info(f"Excel book: {bookname}")
+    logging.info(f"ExcelSheet: {sheetname}")
     time.sleep(2)
-    print("retrieving bookings from surrey outbound")
-    print("\n")
+    logging.info("retrieving bookings from surrey outbound")
 
         #input trailer info fo booking
         #--------------------
@@ -98,8 +100,6 @@ def interface_excel():
     warnings.filterwarnings("ignore", message="Data Validation extension is not supported")
     surrey_outbound_table = pd.read_excel(bookname, sheet_name=sheetname, usecols='x:AC', skiprows=12, nrows=11 )
 
-        #print(surrey_outbound_table)
-    surrey_outbound_table = surrey_outbound_table
 
     trailer_bookings = []
 
@@ -120,36 +120,34 @@ def interface_excel():
         #sailing time, contents and lh# add to trailer dictionary list
     for index, row in surrey_outbound_table.iterrows():
         if row.notna().any():
-            print(row)
+            logging.info(row)
             if (pd.isna(row['Trailer']) ):
                 #pd.isna(row['Contents']) or
                 #pd.isna(row["LH#"])  or
                 #pd.isna(row['Sailing']) or
                 #pd.isna(row['Driver'])):
-                    print(f"Trailer info incomplete - unable to make lineaul")
+                logging.warning(f"Trailer info incomplete - unable to make linehaul")
             elif pd.isna(row['LH#']):
-                print("booking needed -- adding dataframe as dictionary to list")
+                logging.info("booking needed -- adding dataframe as dictionary to list")
                 row_dict = row.to_dict()
 
                 updated_dict = update_dict(row_dict)
                 trailer_bookings.append(updated_dict)
             else:
-                print(f"Booking exists with BOL: {row['BOL']}")
-            print("\n")
+                logging.warning(f"Booking exists with BOL: {row['BOL']}")
         #----0
         #function param is row returns array with [trailer#, empty(bool),lh#,sailing time]
 
-    print("\n")
-    print(trailer_bookings)
-    print("\n")
-    print("Starting trailer Linehauls...\n")
+    logging.debug(trailer_bookings)
+    logging.info("Starting trailer Linehauls...\n")
     time.sleep(1)
     return trailer_bookings
    # book(trailer_bookings=trailer_bookings)
 
 def update_surrey_outbound(trailer_booking):
-    print("Updating surrey outbound")
-    print(trailer_booking)
+    logging.info("Updating surrey outbound")
+    logging.debug(trailer_booking)
+    
 
 
 
