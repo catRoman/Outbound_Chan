@@ -80,13 +80,15 @@ def get_book():
         logging.error(response.json())
 
 
-def interface_excel():
-    result = get_book()
-    if result is None:
-        logging.error("Failed to retrieve the Excel book and sheet.")
-        return
+def retrieve_surrey_outbound(trailer_bookings, excel_data_cont):
+    logging.info("Starting oneDrive sync with excel workbook")
+    excel_data = get_book()
+    if excel_data is None:
+        logging.critical("Failed to retrieve the Excel book and sheet.")
+        sys.exit(1)
 
-    bookname, sheetname = result
+    bookname, sheetname = excel_data
+    excel_data_cont[0] = excel_data
 
     logging.info(f"Excel book: {bookname}")
     logging.info(f"ExcelSheet: {sheetname}")
@@ -100,7 +102,7 @@ def interface_excel():
     warnings.filterwarnings("ignore", message="Data Validation extension is not supported")
     surrey_outbound_table = pd.read_excel(bookname, sheet_name=sheetname, usecols='x:AC', skiprows=12, nrows=11 )
 
-    trailer_bookings = []
+
 
     #truncate the .0 from the float values in the dataframe
     def update_dict(row_dict):
@@ -140,7 +142,7 @@ def interface_excel():
     logging.debug(trailer_bookings)
     logging.info("Starting trailer Linehauls...\n")
     time.sleep(1)
-    return trailer_bookings
+    return excel_data
    # book(trailer_bookings=trailer_bookings)
 
 def update_surrey_outbound(trailer_booking):
@@ -149,4 +151,4 @@ def update_surrey_outbound(trailer_booking):
 
 
 if __name__ == "__main__":
-    interface_excel()
+    retrieve_surrey_outbound()

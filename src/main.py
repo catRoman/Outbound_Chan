@@ -4,6 +4,7 @@ import time
 import sys
 from threading import Thread
 import logging
+from io import BytesIO
 
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -15,8 +16,11 @@ def print_concurrent_output():
 
 
 def Linehaul_Booking():
-    logging.info("Starting oneDrive sync with workbook")
-    trailer_bookings = excel_interface.interface_excel()
+
+    trailer_bookings = []
+    excel_data_cont = ["placeholder"]
+
+    excel_interface.retrieve_surrey_outbound(trailer_bookings=trailer_bookings, excel_data_cont=excel_data_cont)
 
     logging.info("Starting linehaul booking...")
 
