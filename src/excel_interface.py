@@ -7,20 +7,18 @@ from datetime import datetime
 import requests
 import pandas as pd
 from io import BytesIO
-from oauth import get_OAuth_token
 import logging
+from gui import access_token
 
 logger = logging.getLogger(__name__)
 
 
 
 
-def get_book():
-
+def get_book(access_token):
     # Define constants
     search_query = f'{datetime.now().strftime('%b')}-Obws.xlsm'  # File name to search for
-    logging.info("authenticating")
-    access_token = get_OAuth_token()
+
     # Define the API endpoint
     graph_api_url = f"https://graph.microsoft.com/v1.0/me/drive/root/search(q='{search_query}')"
 
@@ -80,9 +78,9 @@ def get_book():
         logging.error(response.json())
 
 
-def retrieve_surrey_outbound(trailer_bookings, excel_data_cont):
+def retrieve_surrey_outbound(trailer_bookings, excel_data_cont, access_token):
     logging.info("Starting oneDrive sync with excel workbook")
-    excel_data = get_book()
+    excel_data = get_book(access_token)
     if excel_data is None:
         logging.critical("Failed to retrieve the Excel book and sheet.")
         sys.exit(1)
@@ -121,21 +119,21 @@ def retrieve_surrey_outbound(trailer_bookings, excel_data_cont):
         #sailing time, contents and lh# add to trailer dictionary list
     for index, row in surrey_outbound_table.iterrows():
         if row.notna().any():
-            logging.info(row)
+            logging.info(f"\n{row}")
             if (pd.isna(row['Trailer']) ):
                 #pd.isna(row['Contents']) or
                 #pd.isna(row["LH#"])  or
                 #pd.isna(row['Sailing']) or
                 #pd.isna(row['Driver'])):
-                logging.warning(f"Trailer info incomplete - unable to make linehaul")
+                logging.warning(f"Trailer info incomplete - unable to make linehaul\n")
             elif pd.isna(row['LH#']):
-                logging.info("booking needed -- adding dataframe as dictionary to list")
+                logging.info("booking needed -- adding dataframe as dictionary to list\n")
                 row_dict = row.to_dict()
 
                 updated_dict = update_dict(row_dict)
                 trailer_bookings.append(updated_dict)
             else:
-                logging.warning(f"Booking exists with BOL: {row['BOL']}")
+                logging.warning(f"Booking exists with BOL: {row['BOL']}\n")
         #----0
         #function param is row returns array with [trailer#, empty(bool),lh#,sailing time]
 
@@ -145,7 +143,7 @@ def retrieve_surrey_outbound(trailer_bookings, excel_data_cont):
     return excel_data
    # book(trailer_bookings=trailer_bookings)
 
-def update_surrey_outbound(trailer_booking):
+def update_surrey_outbound(trailer_booking, access_token):
     logging.info("Updating surrey outbound")
     logging.debug(trailer_booking)
 

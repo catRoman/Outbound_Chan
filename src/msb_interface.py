@@ -9,12 +9,6 @@ import msb_scanner
 logging = logging.getLogger(__name__)
 
 def start_login():
-    #confirm its in chans hand now
-    cont = pyautogui.confirm(text='Wanna go full Chan on this?', title='automate linehaul test', buttons=['ok', 'cancel'])
-
-    if 'ok' not in cont:
-        sys.exit(0)
-
     base_path = get_base_path()
     msb_icon_1 = os.path.join(base_path, 'assets', 'msb_img', 'msb_icon_1.png')
     try:

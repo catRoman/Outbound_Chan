@@ -1,15 +1,25 @@
-from tkinter import *
+import tkinter as tk
+from tkinter import ttk, Button, Label, Frame, Toplevel, LEFT, RIGHT, CENTER, scrolledtext
 import sys
 import os
-from main import Linehaul_Booking
+from main import Linehaul_Booking, cancel_linehaul
 import logging
+from threading import Thread, Event
+import oauth
+import time
+import sv_ttk
+import threading
+
+
 
 logging = logging.getLogger(__name__)
+access_token = None
 
 
 def start_gui():
+    global access_token
     logging.info("Starting GUI")
-    root = Tk()
+    root = tk.Tk()
     root.title("The Chan")
     if getattr(sys, 'frozen', False):
     # Running as a bundled executable
@@ -23,39 +33,97 @@ def start_gui():
 
     root.iconbitmap(icon_path)
     root.geometry("400x400")
+    root.resizable(False, False)
 
 
-    greeting = Label(root, text="Welcome The Chan")
-    greeting.config(font=("Courier", 18))
+    sv_ttk.set_theme("dark")
+    style =ttk.Style()
+    style.configure('Title.TLabel', font=("Arial",14))
+    style.configure('SubTitle.TLabel', font=("Arial",12))
+    style.configure('Text.TLabel', font=("Arial",10))
+    style.configure('TButton', font=("Arial",10))
+    
+
+    logging.info("authenticating")
+    auth_label = ttk.Label(root, text="Authenticating...", style="Title.TLabel")
+    auth_label.place(relx=0.5, rely=0.5, anchor=CENTER)
+    root.update()
+
+    access_token = oauth.get_OAuth_token()
+    auth_label.destroy()
+    #access_token = oauth.get_oauth_token(root)
+    logging.info("authenticated")
+
+    greeting = ttk.Label(root, text="Welcome The Chan", style="Title.TLabel")
     greeting.pack(pady=20)
 
-    message = Label(root, text="The chan is here to help \nwith your outbound tasks.")
-    message.config(font=("Courier", 12))
+    message = ttk.Label(root, text="The chan is here to help \nwith your outbound tasks.", style="Text.TLabel")
     message.pack(padx=40, pady=20)
 
-    message_2 = Label(root, text="Automate:")
-    message_2.config(font=("Courier", 14))
+    message_2 = ttk.Label(root, text="Automate:", style="SubTitle.TLabel")
     message_2.pack(padx=10, pady=10)
 
-    automate_booking = Button(root, text="Linehaul Bookings", command=Linehaul_Booking)
-    automate_booking.config(font=("Courier", 12))
+    automate_booking = ttk.Button(root, text="Linehaul Bookings",padding=(10,5), command=lambda: start_linehaul(gui_button=automate_booking, gui_root=root))
     automate_booking.pack(pady=5)
 
-    update_queue = Button(root, text="Update Queue", command=quit)
-    update_queue.config(font=("Courier", 12))
+    update_queue = ttk.Button(root, text="Update Queue",padding=(10,5), command=lambda: sys.exit(0))
     update_queue.pack(pady=5)
 
 
-    print_labels = Button(root, text="Print Labels", command=quit)
-    print_labels.config(font=("Courier", 12))
+    print_labels = ttk.Button(root, text="Quit",padding=(10,5), command=lambda: sys.exit(0))
     print_labels.pack(pady=5)
 
     root.mainloop()
 
+def start_linehaul(gui_button, gui_root):
+    cancel_linehaul.clear()
+    gui_button.config(text="Loading..", state="disabled")
+    thread = Thread(target=Linehaul_Booking, args=(gui_button, gui_root, access_token))
+    thread.start()
 
-def quit():
-    logging.info("Quitting GUI")
-    sys.exit()
+def show_confirmation_dialog(root, callback):
+
+    def on_confirm():
+        callback(True)  # User confirmed
+        dialog.destroy()
+
+    def on_cancel():
+        callback(False)  # User canceled
+        dialog.destroy()
+
+    dialog = Toplevel(root)
+    dialog.title("Confirmation for the Chan")
+    dialog.geometry("500x150")
+    dialog.resizable(False, False)
+
+    sv_ttk.set_theme("dark")
+
+  # Center the dialog on the root window
+    root.update_idletasks()
+    root_width = root.winfo_width()
+    root_height = root.winfo_height()
+    root_x = root.winfo_x()
+    root_y = root.winfo_y()
+
+    dialog_width = 500
+    dialog_height = 150
+
+    dialog_x = root_x + (root_width // 2) - (dialog_width // 2)
+    dialog_y = root_y + (root_height // 2) - (dialog_height // 2)
+
+    dialog.geometry(f"{dialog_width}x{dialog_height}+{dialog_x}+{dialog_y}")
+
+
+    label = ttk.Label(dialog, text="Do you want to go full Chan?").pack(padx=20)
+    button_frame = Frame(dialog)
+    button_frame.pack(pady=40)
+    confirm_btn = ttk.Button(button_frame, text="Yes", style="text",command=on_confirm, padding=(10,5)).pack(side=LEFT, padx=20)
+    cancel_btn = ttk.Button(button_frame, text="No",style="text", command=on_cancel, padding=(10,5)).pack(side=RIGHT, padx=20)
+
+    dialog.transient(root)
+    dialog.grab_set()
+    root.wait_window(dialog)
+
 
 if __name__ == "__main__":
     start_gui()

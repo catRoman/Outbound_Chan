@@ -18,6 +18,7 @@
     "Linehaul",
     "linehauls",
     "MEIPASS",
+    "msal",
     "noarchive",
     "notna",
     "nrows",
@@ -28,6 +29,7 @@
     "pathex",
     "pyautogui",
     "pytesseract",
+    "relx",
     "retrieveing",
     "seaspan",
     "sheetname",
@@ -35,6 +37,7 @@
     "surryoutbound",
     "Swartz",
     "tesseract",
+    "tkinterweb",
     "tmpdir",
     "traceback",
     "usecols"
