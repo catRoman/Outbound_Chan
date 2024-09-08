@@ -113,19 +113,15 @@ def create_new_linehaul(trailer_bookings):
     pyautogui.typewrite("926", interval=0.1)
     pyautogui.press('tab')
     #send tab + 6 down strokes
-    pyautogui.press('down')
-    pyautogui.press('down')
-    pyautogui.press('down')
-    pyautogui.press('down')
-    pyautogui.press('down')
-    pyautogui.press('down')
+    for _ in range(6):
+        pyautogui.press('down')
     #send enter
     pyautogui.press('enter')
 
-    #get line haul from number opencv
-    screenshot = pyautogui.screenshot("linehaul.png")
+    #get line haul from number  via tesseract
+    screenshot = pyautogui.screenshot()
     linehaul_num = msb_scanner.scan_linehaul_number(screenshot)
-
+    logging.info(f"Linehaul created: {linehaul_num}")
     return  linehaul_num
 
 

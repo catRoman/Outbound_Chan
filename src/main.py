@@ -31,7 +31,6 @@ def Linehaul_Booking():
             logging.info("Linehaul already exists, moving on")
             continue
         booking['LH#'] = msb_interface.create_new_linehaul(booking)
-        logging.info("Linehaul created")
         time.sleep(1)
 
     logging.info("Linehaul booking complete, updating workbook")

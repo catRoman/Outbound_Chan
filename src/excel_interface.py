@@ -100,7 +100,6 @@ def interface_excel():
     warnings.filterwarnings("ignore", message="Data Validation extension is not supported")
     surrey_outbound_table = pd.read_excel(bookname, sheet_name=sheetname, usecols='x:AC', skiprows=12, nrows=11 )
 
-
     trailer_bookings = []
 
     #truncate the .0 from the float values in the dataframe
@@ -147,8 +146,6 @@ def interface_excel():
 def update_surrey_outbound(trailer_booking):
     logging.info("Updating surrey outbound")
     logging.debug(trailer_booking)
-    
-
 
 
 if __name__ == "__main__":

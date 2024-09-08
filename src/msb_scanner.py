@@ -2,8 +2,7 @@ import logging
 from PIL import Image
 import pytesseract
 import re
-
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging = logging.getLogger(__name__)
 
 def scan_linehaul_number(screenshot):
     linehaul_regex = r'Manifest\s#\sL\s(\d{6})'
@@ -11,7 +10,7 @@ def scan_linehaul_number(screenshot):
     try:
         logging.info("Scanning for linehaul number")
         manifest_text = pytesseract.image_to_string(screenshot, config='--psm 6')
-        logging.info(f"\n=====================\n=====================\nManifest text found: {manifest_text}\n=====================\n=====================\n")
+        logging.debug(f"\n=====================\n=====================\nManifest text found: {manifest_text}\n=====================\n=====================\n")
         linehaul_number = re.search(linehaul_regex, manifest_text)
         if linehaul_number:
             logging.info(f"Linehaul number found: {linehaul_number.group(1)}")
