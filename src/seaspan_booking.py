@@ -128,8 +128,9 @@ def fill_new_job_fields(driver, trailer_bookings):
             remarks.send_keys(booking['Sailing'])
 
 
+            save_booking_for_bol(driver)
+            
             try:
-                save_booking_for_bol(driver)
                 modal = WebDriverWait(driver, 5).until(
                     EC.visibility_of_element_located((By.ID, 'ctl00_content_puConfirm_PopupControlConfirmationBox_PWC-1')))
                 close_btn = modal.find_element(By.ID, 'ctl00_content_puConfirm_PopupControlConfirmationBox_cmdOK_CD')
@@ -181,7 +182,7 @@ def retrieve_bol_number(driver):
     logging.info(f"bol#: {bol_number.get_attribute('value')}")
     return bol_number.get_attribute('value')
 
-def save_and_continue_booking():
+def save_and_continue_booking(driver):
     try:
         logging.info("attempting next booking...")
         save_new_btn_hover = ActionChains(driver)
