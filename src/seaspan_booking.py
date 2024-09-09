@@ -129,7 +129,7 @@ def fill_new_job_fields(driver, trailer_bookings):
 
 
             try:
-                save_booking_for_bol()
+                save_booking_for_bol(driver)
                 modal = WebDriverWait(driver, 10).until(
                     EC.visibility_of_element_located((By.ID, 'ctl00_content_puConfirm_PopupControlConfirmationBox_PWC-1')))
                 close_btn = modal.find_element(By.ID, 'ctl00_content_puConfirm_PopupControlConfirmationBox_cmdOK_CD')
@@ -153,13 +153,13 @@ def fill_new_job_fields(driver, trailer_bookings):
         if index == len(trailer_bookings)-1:
             break
         else:
-            save_and_continue_booking()
+            save_and_continue_booking(driver)
 
         logging.info("seaspan bookings complete...")
         logging.info("Assigning reservations")
         driver.quit()
 
-def save_booking_for_bol():
+def save_booking_for_bol(driver):
     logging.info("attempting to save booking...")
     try:
         logging.info("hovering over save button")
@@ -175,7 +175,7 @@ def save_booking_for_bol():
         sys.exit(1)
     logging.info(f"Booking Successful trailer {booking['Trailer']}")
 
-def retrieve_bol_number():
+def retrieve_bol_number(driver):
     bol_number = WebDriverWait(driver, 15).until(
         EC.presence_of_element_located((By.ID,"ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_txtJobNumber_I")))
     logging.info(f"bol#: {bol_number.get_attribute('value')}")
