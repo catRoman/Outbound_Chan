@@ -157,9 +157,9 @@ def fill_new_job_fields(driver, trailer_bookings):
         else:
             save_and_continue_booking(driver)
 
-        logging.info("seaspan bookings complete...")
-        logging.info("Assigning reservations")
-        driver.quit()
+    logging.info("seaspan bookings complete...")
+    logging.info("Assigning reservations")
+    driver.quit()
 
 def save_booking_for_bol(driver):
     save_btn = driver.find_element(By.ID, "ctl00_content_menuMain_DXI2_T")
@@ -224,6 +224,7 @@ def book(trailer_bookings):
     add_new_job(driver)
     switch_to_new_job_tab(driver)
     fill_new_job_fields(driver, trailer_bookings)
+    logging.info(trailer_bookings)
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
