@@ -215,7 +215,7 @@ def get_adjusted_date():
         return tomorrow
 
 def book(trailer_bookings):
-    driver, seaspan_password, seaspan_password = setup_driver()
+    driver, seaspan_username, seaspan_password = setup_driver()
     login_seaspan(driver, seaspan_username, seaspan_password)
     add_new_job(driver)
     switch_to_new_job_tab(driver)
