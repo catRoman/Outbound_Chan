@@ -215,8 +215,6 @@ def get_adjusted_date():
         return tomorrow
 
 def book(trailer_bookings):
-    
-    
     driver, seaspan_password, seaspan_password = setup_driver()
     login_seaspan(driver, seaspan_username, seaspan_password)
     add_new_job(driver)
@@ -225,12 +223,13 @@ def book(trailer_bookings):
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
-else:
-    logging = logging.getLogger(__name__)
-
+    
     book([{'Trailer': '53V545', 'Contents': 'Empty ??', 'LH#': '112495', 'BOL': nan, 'Sailing': '18:50 p2', 'Driver': '926'}, 
     {'Trailer': 'HVR2013R', 'Contents': 'Diamond + Ats + ??', 'LH#': '112496', 'BOL': nan, 'Sailing': '18:50 p1', 'Driver': '926'}, 
     {'Trailer': '53H354', 'Contents': 'Empty ??', 'LH#': '112497', 'BOL': nan, 'Sailing': '1:55 p1', 'Driver': '926'}])
+else:
+    logging = logging.getLogger(__name__)
+
 
 #box -> ctl00_content_puConfirm_PopupControlConfirmationBox_PWC-1
 #ok_btn -> ctl00_content_puConfirm_PopupControlConfirmationBox_cmdOK_CD
