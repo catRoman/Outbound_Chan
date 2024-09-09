@@ -130,7 +130,7 @@ def fill_new_job_fields(driver, trailer_bookings):
 
             try:
                 save_booking_for_bol(driver)
-                modal = WebDriverWait(driver, 10).until(
+                modal = WebDriverWait(driver, 5).until(
                     EC.visibility_of_element_located((By.ID, 'ctl00_content_puConfirm_PopupControlConfirmationBox_PWC-1')))
                 close_btn = modal.find_element(By.ID, 'ctl00_content_puConfirm_PopupControlConfirmationBox_cmdOK_CD')
                 close_btn.click()
@@ -138,7 +138,8 @@ def fill_new_job_fields(driver, trailer_bookings):
             except Exception as e:
                 logging.debug(f"Modal not present, continuing booking")
 
-            booking['BOL'] = retrieve_bol_number()
+            booking['BOL'] = retrieve_bol_number(driver)
+            time.sleep(1)
 
 
         except Exception as e:
@@ -147,8 +148,7 @@ def fill_new_job_fields(driver, trailer_bookings):
             sys.exit(1)
         logging.info("trailer info successfully input...")
         time.sleep(1)
-        save_booking_for_bol()
-        bol_number = retrieve_bol_number()
+        
         
         if index == len(trailer_bookings)-1:
             break
