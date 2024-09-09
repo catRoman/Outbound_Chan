@@ -12,11 +12,13 @@ import os
 import sys
 import logging
 
-logging = logging.getLogger(__name__)
 
-def book(trailer_bookings):
+#6394295
+
 
     #setup
+
+def setup_driver():
     logging.info("accessing user credentials")
     load_dotenv()
     seaspan_username = os.getenv("SEASPAN_USERNAME")
@@ -24,21 +26,20 @@ def book(trailer_bookings):
     chrome_options = Options()
     chrome_options.add_argument('--log-level=3')  # 3 = ERROR
     driver = webdriver.Chrome(options=chrome_options)
-
+    set_screen_dimensions(driver)
+    return driver, seaspan_username, seaspan_password
+def set_screen_dimensions(driver):
     screen_width = driver.execute_script("return window.screen.availWidth;")
     screen_height = driver.execute_script("return window.screen.availHeight;")
-
     driver.set_window_rect(
         x=0,  # X position (left edge of the screen)
         y=0,  # Y position (top edge of the screen)
         width=int(screen_width * 0.5),  # Width 50% of screen width
         height=int(screen_height)  # Height 50% of screen height
     )
-
+def login_seaspan(driver, seaspan_username, seaspan_password):
     driver.get("https://sfctops.seaspan.com/")
-
     time.sleep(2)
-
     #login
     customer_radio = driver.find_element(By.ID, "ctl00_content_rblLoginAs_RB0_I_D")
     username = driver.find_element(By.ID, "ctl00_content_txtUserName_I")
@@ -55,24 +56,25 @@ def book(trailer_bookings):
         logging.error(f"failed to login: {e}")
         driver.quit()
         sys.exit(1)
-
     logging.info("successfully logged in...")
-    #make a new job
+time.sleep(2)
+
+def add_new_job(driver):
     jobs_menu = WebDriverWait(driver, 10).until(
         EC.visibility_of_element_located((By.ID, "ctl00_menuMain_DXI0_")),)
-
     hover_jobs_menu = ActionChains(driver)
     hover_jobs_menu.move_to_element(jobs_menu).perform()
     add_new_btn = WebDriverWait(driver, 10).until(
         EC.visibility_of_element_located((By.ID, "ctl00_menuMain_DXI0i1_T")))
     logging.info("adding new job...")
     add_new_btn.click()
+time.sleep(1)
 
-    time.sleep(1)
+def switch_to_new_job_tab(driver):
     window_handles = driver.window_handles
     driver.switch_to.window(window_handles[-1])
 
-    #new job fields
+def fill_new_job_fields(driver, trailer_bookings):
     unit_number = WebDriverWait(driver, 10).until(
     EC.visibility_of_element_located((By.ID,"ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_txtUnitNumber_I")))
     unit_type = driver.find_element(By.ID,"ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_cmbContainerType_I")
@@ -86,7 +88,6 @@ def book(trailer_bookings):
     contents = driver.find_element(By.ID,"ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_cmbContents_I")
     destination = driver.find_element(By.ID, "ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_cmbDestination_I")
     remarks = driver.find_element(By.ID,"ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_txtConsignmentComments_I")
-
     save_btn = driver.find_element(By.ID, "ctl00_content_menuMain_DXI2_T")
     save_new_btn = driver.find_element(By.ID, "ctl00_content_menuMain_DXI4_T")
     #loop through booking list and populate
@@ -100,7 +101,6 @@ def book(trailer_bookings):
                 unit_type.send_keys("Van");
                 modal = WebDriverWait(driver, 10).until(
                     EC.visibility_of_element_located((By.ID, 'ctl00_content_puUnitSearch_PopupControlSFCUnitSearch_PW-1')))
-
                 close_btn = modal.find_element(By.ID, 'ctl00_content_puUnitSearch_PopupControlSFCUnitSearch_HCB-1')
                 close_btn.click()
                 logging.debug(f"Modal closed, continuing booking")
@@ -109,12 +109,9 @@ def book(trailer_bookings):
             length.send_keys("53")
             route.send_keys("Swartz Bay > Tilbury")
             po_number.send_keys(booking['LH#'])
-
             #tomorrows dat unless friday then monday
             adjusted_date = get_adjusted_date()
             pickup_date.send_keys(adjusted_date.strftime('%m/%d/%Y'))
-
-
             time.sleep(1)
             #driver.execute_script("arguments[0].value = '09:00';", pickup_time)
             pickup_time_input = ActionChains(driver)
@@ -125,58 +122,62 @@ def book(trailer_bookings):
             else:
                 loaded_radio_btn.click()
                 contents.send_keys("Consumer- Commercial")
-
             destination.send_keys("BC-Mainland - Lower Mainland")
             remarks.send_keys(booking['Sailing'])
         except Exception as e:
             logging.error(f"Trailer Booking Failed for trailer {booking['Trailer']}: {e}")
             driver.quit()
             sys.exit(1)
-        
-        
         logging.info("trailer info successfully input...")
         time.sleep(1)
-         #save for bol
-        logging.info("attempting to save booking...")
-        try:
-            save_btn_hover = ActionChains(driver)
-            save_btn_hover.move_to_element(save_btn).click().perform()
-
-            save_btn.click()
-        except Exception as e:
-            logging.error(f"failed to save booking for trailer {booking['Trailer']}: {e}")
-            driver.quit()
-            sys.exit(1)
-        
-        logging.info(f"Booking Successful trailer {booking['Trailer']}")
-        time.sleep(5)
-
-        bol_number = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.ID,"ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_txtJobNumber_I")))
-
-        logging.info(f"bol#: {bol_number.get_attribute('value')}")
-
+        save_booking_for_bol()
+        bol_number = retrieve_bol_number()
         if index == len(trailer_bookings)-1:
             break
         else:
-            try:
-                logging.info("attempting next booking...")
-                save_new_btn_hover = ActionChains(driver)
-                save_new_btn_hover.move_to_element(save_new_btn).perform()
-                save_new_btn.click()
-            except Exception as e:
-                logging.error(f"failed to continue booking: {e}")
-                driver.quit()
-                sys.exit(1)
+            save_and_continue_booking()
+        logging.info("seaspan bookings complete...")
+        logging.info("Assigning reservations")
+        driver.quit()
 
-        time.sleep(2)
+def save_booking_for_bol():
+    logging.info("attempting to save booking...")
+    try:
+        logging.info("hovering over save button")
+        save_btn_hover = ActionChains(driver)
+        time.sleep(3)
+        save_btn_hover.move_to_element(save_btn).click().perform()
+        logging.info("clicking save button, wait 30 seconds")
+        save_btn.click()
+        time.sleep(60)
+    except Exception as e:
+        logging.error(f"failed to save booking for trailer {booking['Trailer']}: {e}")
+        driver.quit()
+        sys.exit(1)
+    logging.info(f"Booking Successful trailer {booking['Trailer']}")
 
+def retrieve_bol_number():
+    bol_number = WebDriverWait(driver, 15).until(
+        EC.presence_of_element_located((By.ID,"ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_txtJobNumber_I")))
+    logging.info(f"bol#: {bol_number.get_attribute('value')}")
+    return bol_number.get_attribute('value')
 
-    logging.info("seaspan bookings complete...")
-    logging.info("Assigning reservations")
-
-    driver.quit()
-
+def save_and_continue_booking():
+    try:
+        logging.info("attempting next booking...")
+        save_new_btn_hover = ActionChains(driver)
+        logging.info("hover")
+        time.sleep(3)
+        save_new_btn_hover.move_to_element(save_new_btn).perform()
+        logging.info("preform")
+        time.sleep(3)
+        save_new_btn.click()
+        logging.info("click")
+        time.sleep(3)
+    except Exception as e:
+        logging.error(f"failed to continue booking: {e}")
+        driver.quit()
+        sys.exit(1)
 
 def get_adjusted_date():
     # Get today's date
@@ -193,12 +194,16 @@ def get_adjusted_date():
         return next_monday
     else:
         return tomorrow
-    
+
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+else:
+    logging = logging.getLogger(__name__)
+
     book([{'Trailer': '53V520', 'Contents': 'Empty??', 'LH#': 123456, 'BOL': "nan", 'Sailing': '18:50 P2', 'Driver': 926}, \
         {'Trailer': '53V568', 'Contents': 'Empty??', 'LH#': 987654, 'BOL': "nan", 'Sailing': '18:50 P1', 'Driver': 926},\
         {'Trailer': 'HVR2013R', 'Contents': 'Diamond + Manitoulin', 'LH#': 777777, 'BOL': "nan", 'Sailing': '18:50 P1', 'Driver': 926}])
 
-
+#box -> ctl00_content_puConfirm_PopupControlConfirmationBox_PWC-1
+#ok_btn -> ctl00_content_puConfirm_PopupControlConfirmationBox_cmdOK_CD
 
