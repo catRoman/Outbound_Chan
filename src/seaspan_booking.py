@@ -230,7 +230,7 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
     
     book([ 
-    {'Trailer': 'HVR2013R', 'Contents': 'Diamond + Ats + ??', 'LH#': '112496', 'BOL': 'nan', 'Sailing': '18:50 p1', 'Driver': '926'}, 
+    
     {'Trailer': '53H354', 'Contents': 'Empty ??', 'LH#': '112497', 'BOL': 'nan', 'Sailing': '1:55 p1', 'Driver': '926'}])
 else:
     logging = logging.getLogger(__name__)
