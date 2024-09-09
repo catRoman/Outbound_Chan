@@ -140,6 +140,7 @@ def fill_new_job_fields(driver, trailer_bookings):
                 logging.debug(f"Modal not present, continuing booking")
 
             booking['BOL'] = retrieve_bol_number(driver)
+            logging.info(f"Booking Successful trailer {booking['Trailer']}")
             time.sleep(1)
 
 
@@ -171,10 +172,10 @@ def save_booking_for_bol(driver):
         save_btn.click()
         time.sleep(10)
     except Exception as e:
-        logging.error(f"failed to save booking for trailer {booking['Trailer']}: {e}")
+        logging.error(f"failed to save booking: {e}")
         driver.quit()
         sys.exit(1)
-    logging.info(f"Booking Successful trailer {booking['Trailer']}")
+    
 
 def retrieve_bol_number(driver):
     bol_number = WebDriverWait(driver, 15).until(
