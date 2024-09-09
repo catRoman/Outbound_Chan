@@ -28,6 +28,7 @@ def setup_driver():
     driver = webdriver.Chrome(options=chrome_options)
     set_screen_dimensions(driver)
     return driver, seaspan_username, seaspan_password
+
 def set_screen_dimensions(driver):
     screen_width = driver.execute_script("return window.screen.availWidth;")
     screen_height = driver.execute_script("return window.screen.availHeight;")
@@ -37,6 +38,7 @@ def set_screen_dimensions(driver):
         width=int(screen_width * 0.5),  # Width 50% of screen width
         height=int(screen_height)  # Height 50% of screen height
     )
+
 def login_seaspan(driver, seaspan_username, seaspan_password):
     driver.get("https://sfctops.seaspan.com/")
     time.sleep(2)
@@ -124,6 +126,21 @@ def fill_new_job_fields(driver, trailer_bookings):
                 contents.send_keys("Consumer- Commercial")
             destination.send_keys("BC-Mainland - Lower Mainland")
             remarks.send_keys(booking['Sailing'])
+
+
+             try:
+                save_booking_for_bol()
+                modal = WebDriverWait(driver, 10).until(
+                    EC.visibility_of_element_located((By.ID, 'ctl00_content_puConfirm_PopupControlConfirmationBox_PWC-1')))
+                close_btn = modal.find_element(By.ID, 'ctl00_content_puConfirm_PopupControlConfirmationBox_cmdOK_CD')
+                close_btn.click()
+                logging.debug(f"Modal closed, continuing booking")
+            except Exception as e:
+                logging.debug(f"Modal not present, continuing booking")
+
+            booking['BOL'] = retrieve_bol_number()
+
+
         except Exception as e:
             logging.error(f"Trailer Booking Failed for trailer {booking['Trailer']}: {e}")
             driver.quit()
@@ -132,10 +149,12 @@ def fill_new_job_fields(driver, trailer_bookings):
         time.sleep(1)
         save_booking_for_bol()
         bol_number = retrieve_bol_number()
+        
         if index == len(trailer_bookings)-1:
             break
         else:
             save_and_continue_booking()
+
         logging.info("seaspan bookings complete...")
         logging.info("Assigning reservations")
         driver.quit()
@@ -149,7 +168,7 @@ def save_booking_for_bol():
         save_btn_hover.move_to_element(save_btn).click().perform()
         logging.info("clicking save button, wait 30 seconds")
         save_btn.click()
-        time.sleep(60)
+        time.sleep(10)
     except Exception as e:
         logging.error(f"failed to save booking for trailer {booking['Trailer']}: {e}")
         driver.quit()
@@ -195,14 +214,23 @@ def get_adjusted_date():
     else:
         return tomorrow
 
+def book(trailer_bookings):
+    
+    
+    driver, seaspan_password, seaspan_password = setup_driver()
+    login_seaspan(driver, seaspan_username, seaspan_password)
+    add_new_job(driver)
+    switch_to_new_job_tab(driver)
+    fill_new_job_fields(driver, trailer_bookings)
+
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 else:
     logging = logging.getLogger(__name__)
 
-    book([{'Trailer': '53V520', 'Contents': 'Empty??', 'LH#': 123456, 'BOL': "nan", 'Sailing': '18:50 P2', 'Driver': 926}, \
-        {'Trailer': '53V568', 'Contents': 'Empty??', 'LH#': 987654, 'BOL': "nan", 'Sailing': '18:50 P1', 'Driver': 926},\
-        {'Trailer': 'HVR2013R', 'Contents': 'Diamond + Manitoulin', 'LH#': 777777, 'BOL': "nan", 'Sailing': '18:50 P1', 'Driver': 926}])
+    book([{'Trailer': '53V545', 'Contents': 'Empty ??', 'LH#': '112495', 'BOL': nan, 'Sailing': '18:50 p2', 'Driver': '926'}, 
+    {'Trailer': 'HVR2013R', 'Contents': 'Diamond + Ats + ??', 'LH#': '112496', 'BOL': nan, 'Sailing': '18:50 p1', 'Driver': '926'}, 
+    {'Trailer': '53H354', 'Contents': 'Empty ??', 'LH#': '112497', 'BOL': nan, 'Sailing': '1:55 p1', 'Driver': '926'}])
 
 #box -> ctl00_content_puConfirm_PopupControlConfirmationBox_PWC-1
 #ok_btn -> ctl00_content_puConfirm_PopupControlConfirmationBox_cmdOK_CD

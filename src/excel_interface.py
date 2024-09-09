@@ -146,6 +146,27 @@ def retrieve_surrey_outbound(trailer_bookings, excel_data_cont, access_token):
 def update_surrey_outbound(trailer_booking, access_token):
     logging.info("Updating surrey outbound")
     logging.debug(trailer_booking)
+    # Suppose `byte_stream` is your byte stream of the Excel file
+    byte_stream = ...  # Replace this with your byte stream source
+
+    # Load the byte stream into a pandas DataFrame
+    excel_data = pd.read_excel(BytesIO(byte_stream), sheet_name=None)  # Load all sheets
+
+    # Process the DataFrame
+    sheet_name = 'Sheet1'
+    df = excel_data[sheet_name]  # Load a specific sheet into DataFrame
+
+    # Modify the DataFrame (e.g., add a new column)
+    df['NewColumn'] = 'SomeValue'
+
+    # Save the modified DataFrame back into a byte stream
+    output_stream = BytesIO()
+
+    with pd.ExcelWriter(output_stream, engine='openpyxl') as writer:
+        df.to_excel(writer, sheet_name=sheet_name, index=False)
+
+    # Get the bytes from the output stream
+    modified_bytes = output_stream.getvalue()
 
 
 if __name__ == "__main__":
