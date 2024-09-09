@@ -2,7 +2,7 @@ import sys
 import time
 import warnings
 import pandas as pd
-from seaspan_booking import book
+#from seaspan_booking import book
 from datetime import datetime
 import requests
 import pandas as pd
