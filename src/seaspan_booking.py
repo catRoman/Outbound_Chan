@@ -128,7 +128,7 @@ def fill_new_job_fields(driver, trailer_bookings):
             remarks.send_keys(booking['Sailing'])
 
 
-             try:
+            try:
                 save_booking_for_bol()
                 modal = WebDriverWait(driver, 10).until(
                     EC.visibility_of_element_located((By.ID, 'ctl00_content_puConfirm_PopupControlConfirmationBox_PWC-1')))
