@@ -90,8 +90,8 @@ def fill_new_job_fields(driver, trailer_bookings):
     contents = driver.find_element(By.ID,"ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_cmbContents_I")
     destination = driver.find_element(By.ID, "ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_cmbDestination_I")
     remarks = driver.find_element(By.ID,"ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_txtConsignmentComments_I")
-    save_btn = driver.find_element(By.ID, "ctl00_content_menuMain_DXI2_T")
-    save_new_btn = driver.find_element(By.ID, "ctl00_content_menuMain_DXI4_T")
+   
+    
     #loop through booking list and populate
     time.sleep(1)
     logging.info("attempting bookings....")
@@ -162,6 +162,7 @@ def fill_new_job_fields(driver, trailer_bookings):
         driver.quit()
 
 def save_booking_for_bol(driver):
+    save_btn = driver.find_element(By.ID, "ctl00_content_menuMain_DXI2_T")
     logging.info("attempting to save booking...")
     try:
         logging.info("hovering over save button")
@@ -184,6 +185,7 @@ def retrieve_bol_number(driver):
     return bol_number.get_attribute('value')
 
 def save_and_continue_booking(driver):
+    save_new_btn = driver.find_element(By.ID, "ctl00_content_menuMain_DXI4_T")
     try:
         logging.info("attempting next booking...")
         save_new_btn_hover = ActionChains(driver)
