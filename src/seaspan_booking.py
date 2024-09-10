@@ -1,12 +1,9 @@
 import logging
 import time
 import os
-import sys
-
 from datetime import datetime, timedelta
 from selenium import webdriver
 from dotenv import load_dotenv
-
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
@@ -16,11 +13,26 @@ from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import TimeoutException
 
 
+class SeaspanBookingException(Exception):
+    def __init__(self, trailer, message="Issue booking trailer on seaspan"):
+        self.value = trailer
+        self.message = message
+        super().__init__(self.message)
 
+class SeaspanBookingsException(Exception):
+    def __init__(self, message="Issue making seaspan bookings"):
+        self.message = message
+        super().__init__(self.message)
+
+
+class SeaspanBookingSaveException(Exception):
+    def __init__(self, message="Issue saving seaspan bookings"):
+        self.message = message
+        super().__init__(self.message)
 class SeaspanBooking:
 
-    def __init__(self, trailer_booking):
-        self.trailer_booking = trailer_booking
+    def __init__(self, trailer_bookings):
+        self.trailer_bookings = trailer_bookings
         self._load_dotenv()
         self._setup_driver()
         self._set_screen_dimensions()
@@ -69,7 +81,7 @@ class SeaspanBooking:
         except Exception as e:
             logging.error("failed to login:  %s",e)
             self.driver.quit()
-            return
+            raise SeaspanBookingsException() from e
         logging.info("successfully logged in...")
     time.sleep(2)
 
@@ -138,26 +150,28 @@ class SeaspanBooking:
             destination.send_keys("BC-Mainland - Lower Mainland")
             remarks.send_keys(booking['Sailing'])
 
-            self.save_booking_for_bol()
+            try:
+                self.save_booking_for_bol()
+                booking['BOL'] = self.retrieve_bol_number()
+            except Exception as e:
+                self.driver.quit()
+                raise SeaspanBookingSaveException() from e
 
             self._modal_close("ctl00_content_puConfirm_PopupControlConfirmationBox_PWC-1", "ctl00_content_puConfirm_PopupControlConfirmationBox_cmdOK_CD")
 
-            booking['BOL'] = self.retrieve_bol_number()
             logging.info("Booking Successful trailer %s",booking['Trailer'])
             time.sleep(1)
-        except SeaspanBookingException as e:
-            logging.error(   ",e)
+        except Exception as e:
+            logging.error("Error booking trailer %s: %s", booking['Trailer'], e)
             self.driver.quit()
-            return
+            raise SeaspanBookingException(booking['Trailer']) from e
 
         logging.info("trailer info successfully input...")
         time.sleep(1)
 
 
-    def fill_new_job_fields(self):
-
+    def make_new_bookings(self):
         #loop through booking list and populate
-        time.sleep(1)
         logging.info("attempting bookings....")
         for index, booking in enumerate(self.trailer_bookings):
             self.make_new_booking(booking)
@@ -165,40 +179,40 @@ class SeaspanBooking:
             if index == len(self.trailer_bookings)-1:
                 break
             else:
-                self.save_and_continue_booking()
+                try:
+                    self.save_and_continue_booking()
+                except SeaspanBookingException as e:
+                    logging.error("failed to save booking: %s",e)
+                    self.driver.quit()
+
 
         logging.info("seaspan bookings complete...")
         logging.info("Assigning reservations")
         self.driver.quit()
 
-    def save_booking_for_bol(driver):
-        save_btn = driver.find_element(By.ID, "ctl00_content_menuMain_DXI2_T")
+    def save_booking_for_bol(self):
+        save_btn = self.driver.find_element(By.ID, "ctl00_content_menuMain_DXI2_T")
         logging.info("attempting to save booking...")
-        try:
-            logging.info("hovering over save button")
-            save_btn_hover = ActionChains(driver)
-            time.sleep(3)
-            save_btn_hover.move_to_element(save_btn).click().perform()
-            logging.info("clicking save button, wait 30 seconds")
-            save_btn.click()
-            time.sleep(10)
-        except Exception as e:
-            logging.error("failed to save booking: %s",e)
-            driver.quit()
-            sys.exit(1)
+        logging.info("hovering over save button")
+        save_btn_hover = ActionChains(self.driver)
+        time.sleep(3)
+        save_btn_hover.move_to_element(save_btn).click().perform()
+        logging.info("clicking save button, wait 5 seconds")
+        save_btn.click()
+        time.sleep(5)
 
 
-    def retrieve_bol_number(driver):
-        bol_number = WebDriverWait(driver, 15).until(
+    def retrieve_bol_number(self):
+        bol_number = WebDriverWait(self.driver, 15).until(
             EC.presence_of_element_located((By.ID,"ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_txtJobNumber_I")))
         logging.info("bol#: %s", bol_number.get_attribute('value'))
         return bol_number.get_attribute('value')
 
-    def save_and_continue_booking(driver):
-        save_new_btn = driver.find_element(By.ID, "ctl00_content_menuMain_DXI4_T")
+    def save_and_continue_booking(self):
+        save_new_btn = self.driver.find_element(By.ID, "ctl00_content_menuMain_DXI4_T")
         try:
             logging.info("attempting next booking...")
-            save_new_btn_hover = ActionChains(driver)
+            save_new_btn_hover = ActionChains(self.driver)
             logging.info("hover")
             time.sleep(3)
             save_new_btn_hover.move_to_element(save_new_btn).perform()
@@ -209,10 +223,9 @@ class SeaspanBooking:
             time.sleep(3)
         except Exception as e:
             logging.error("failed to continue booking: %s", e )
-            driver.quit()
-            sys.exit(1)
+            raise SeaspanBookingsException() from e
 
-    def get_adjusted_date():
+    def get_adjusted_date(self):
         # Get today's date
         today = datetime.now()
 
@@ -227,29 +240,24 @@ class SeaspanBooking:
             return next_monday
         else:
             return tomorrow
+    def log_trailer_bookings(self):
+        logging.info(self.trailer_bookings)
 
-    def book(trailer_bookings):
-        driver, seaspan_username, seaspan_password = setup_driver()
-        login_seaspan(driver, seaspan_username, seaspan_password)
-        add_new_job(driver)
-        switch_to_new_job_tab(driver)
-        fill_new_job_fields(driver, trailer_bookings)
-        logging.info(trailer_bookings)
+    def book_trailers(self):
+        self.login_seaspan()
+        self.add_new_job()
+        self.switch_to_new_job_tab()
+        self.make_new_bookings()
+        self.log_trailer_bookings()
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
-
-    book([
-
-    {'Trailer': '53H354', 'Contents': 'Empty ??', 'LH#': '112497', 'BOL': 'nan', 'Sailing': '1:55 p1', 'Driver': '926'}])
+    trailer_bookings = ([{'Trailer': '53H354', 'Contents': 'Empty ??', 'LH#': '112497', 'BOL': 'nan', 'Sailing': '1:55 p1', 'Driver': '926'}])
+    seaspan = SeaspanBooking(trailer_bookings)
+    seaspan.book_trailers()
 else:
     logging = logging.getLogger(__name__)
 
 
 #box -> ctl00_content_puConfirm_PopupControlConfirmationBox_PWC-1
 #ok_btn -> ctl00_content_puConfirm_PopupControlConfirmationBox_cmdOK_CD
-class SeaspanBookingException(Exception):
-    def __init__(self, trailer, message="Issue booking trailer on seaspan"):
-        self.value = trailer
-        self.message = message
-        super().__init__(self.message)
