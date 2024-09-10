@@ -27,6 +27,7 @@
     "padx",
     "pady",
     "pathex",
+    "pyauto",
     "pyautogui",
     "pytesseract",
     "relx",

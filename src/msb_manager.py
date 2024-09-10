@@ -4,10 +4,11 @@ import sys
 import os
 from dotenv import load_dotenv
 import logging
-import msb_scanner
+from msb_scanner import MSBScanner
 
 logging = logging.getLogger(__name__)
-class MSBMangerException(Exception):
+
+class MSBManagerException(Exception):
     def __init__(self, message="Issue using MSBManger"):
         self.message = message
         super().__init__(self.message)
@@ -127,7 +128,9 @@ class MSBManager:
 
         #get line haul from number  via tesseract
         screenshot = pyautogui.screenshot()
-        linehaul_num = msb_scanner.scan_linehaul_number(screenshot)
+        linehaul_num_scanner = MSBScanner(screenshot)
+        linehaul_num = linehaul_num_scanner.scan_for_linehaul_number()
+
         logging.info(f"Linehaul created: {linehaul_num}")
         return  linehaul_num
 
@@ -145,10 +148,10 @@ class MSBManager:
 
         except pyautogui.ImageNotFoundException:
             logging.critical("%s - Image not found exception.Bailing out...", imageToClick)
-            sys.exit(1)
+            raise MSBManagerException("Image not found exception.Bailing out...")
         except Exception as e:
-            logging.critical("An error occurred: %,"e)
-            raise MSBManagerException("An error occurred: %s",e)
+            logging.critical("An error occurred: %",e)
+            raise MSBManagerException("An error occurred in MSB Manager: %",e)
 
     def wait(self, image_path, timeout=30):
         start_time = time.time()
@@ -163,11 +166,9 @@ class MSBManager:
                 pass
             except Exception as e:
                 logging.critical("An error occurred: %s",e)
-                sys.exit(1)
+                raise MSBManagerException("An error occurred: %s",e)
 
             time.sleep(1)
-
-
         logging.critical("Timed out waiting for %s",image_path)
         sys.exit(1)
 
