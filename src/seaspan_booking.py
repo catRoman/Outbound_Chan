@@ -77,7 +77,7 @@ def switch_to_new_job_tab(driver):
     driver.switch_to.window(window_handles[-1])
 
 def fill_new_job_fields(driver, trailer_bookings):
-    unit_number = WebDriverWait(driver, 10).until(
+    unit_number = WebDriverWait(driver, 30).until(
     EC.visibility_of_element_located((By.ID,"ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_txtUnitNumber_I")))
     unit_type = driver.find_element(By.ID,"ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_cmbContainerType_I")
     length = driver.find_element(By.ID,"ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_seLength_I")
@@ -131,7 +131,7 @@ def fill_new_job_fields(driver, trailer_bookings):
             save_booking_for_bol(driver)
             
             try:
-                modal = WebDriverWait(driver, 5).until(
+                modal = WebDriverWait(driver, 10).until(
                     EC.visibility_of_element_located((By.ID, 'ctl00_content_puConfirm_PopupControlConfirmationBox_PWC-1')))
                 close_btn = modal.find_element(By.ID, 'ctl00_content_puConfirm_PopupControlConfirmationBox_cmdOK_CD')
                 close_btn.click()
@@ -169,7 +169,7 @@ def save_booking_for_bol(driver):
         save_btn_hover = ActionChains(driver)
         time.sleep(3)
         save_btn_hover.move_to_element(save_btn).click().perform()
-        logging.info("clicking save button, wait 30 seconds")
+        logging.info("clicking save button, wait 10 seconds")
         save_btn.click()
         time.sleep(10)
     except Exception as e:
@@ -196,7 +196,7 @@ def save_and_continue_booking(driver):
         time.sleep(3)
         save_new_btn.click()
         logging.info("click")
-        time.sleep(3)
+        time.sleep(30)
     except Exception as e:
         logging.error(f"failed to continue booking: {e}")
         driver.quit()
@@ -229,8 +229,7 @@ def book(trailer_bookings):
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
     
-    book([{'Trailer': 'HVR2017R', 'Contents': 'Diamond + Ats + ??', 'LH#': '112557', 'BOL': 'nan', 'Sailing': '18:50 p1', 'Driver': '926'},
-     {'Trailer': '53V527', 'Contents': 'Empty ??', 'LH#': '112558', 'BOL': 'nan', 'Sailing': '18:50 p2', 'Driver': '926'},
+    book([{'Trailer': '53V527', 'Contents': 'Empty ??', 'LH#': '112558', 'BOL': 'nan', 'Sailing': '18:50 p2', 'Driver': '926'},
     {'Trailer': '53H328', 'Contents': 'Empty ??', 'LH#': '112559', 'BOL': 'nan', 'Sailing': '18:50 p3', 'Driver': '926'}])
 else:
     logging = logging.getLogger(__name__)
