@@ -229,9 +229,8 @@ def book(trailer_bookings):
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
     
-    book([ 
-     {'Trailer': 'HVR2017R', 'Contents': 'Diamond + Ats + ??', 'LH#': '112557', 'BOL': 'nan', 'Sailing': '18:50 p1', 'Driver': '926'}
-     {'Trailer': '53V527', 'Contents': 'Empty ??', 'LH#': '112558', 'BOL': 'nan', 'Sailing': '18:50 p2', 'Driver': '926'}
+    book([{'Trailer': 'HVR2017R', 'Contents': 'Diamond + Ats + ??', 'LH#': '112557', 'BOL': 'nan', 'Sailing': '18:50 p1', 'Driver': '926'},
+     {'Trailer': '53V527', 'Contents': 'Empty ??', 'LH#': '112558', 'BOL': 'nan', 'Sailing': '18:50 p2', 'Driver': '926'},
     {'Trailer': '53H328', 'Contents': 'Empty ??', 'LH#': '112559', 'BOL': 'nan', 'Sailing': '18:50 p3', 'Driver': '926'}])
 else:
     logging = logging.getLogger(__name__)
