@@ -17,24 +17,26 @@ class OutboundWorkBook:
     def __init__(self):
         self.excel_data = None
         self.access_token = None
-        self.search_query = self.get_this_months_book()
+        self.file_content = None
+        self.todays_sheet = None
+        self.excel_data = None
+        self.search_query = self._get_this_months_book()
 
-    def get_this_months_book(self):
+    def _get_this_months_book(self):
         return f'{datetime.now().strftime('%b')}-Obws.xlsm'  # File name to search for
-    
-    def get_book(access_token):
-        # Define constants
+
+    def _get_book(self):     # Define constants
 
         # Define the API endpoint
-        graph_api_url = f"https://graph.microsoft.com/v1.0/me/drive/root/search(q='{search_query}')"
+        graph_api_url = f"https://graph.microsoft.com/v1.0/me/drive/root/search(q='{self.search_query}')"
 
         # Set up the request headers
         headers = {
-            'Authorization': f'Bearer {access_token}'
+            'Authorization': f'Bearer {self.access_token}'
         }
 
         # Make the request to search for the file
-        logging.info(f"Searching for file: {search_query}")
+        logging.info("Searching for file: %s", self.search_query)
         response = requests.get(graph_api_url, headers=headers)
 
         if response.status_code == 200:
@@ -59,17 +61,18 @@ class OutboundWorkBook:
                         file_content = BytesIO(file_response.content)
                         #df = pd.read_excel(file_content)
 
-                        excel_book = pd.ExcelFile(file_content, engine='openpyxl')
+                        excel_book = pd.ExcelFile(self.file_content, engine='openpyxl')
                         todays_sheet = excel_book.sheet_names[0]
 
                         logging.info("Retrieved file content for sheet: %s",todays_sheet)
-                        logging.info("Today's book: %s",search_query)
+                        logging.info("Today's book: %s",self.search_query)
                         current_date = datetime.now().strftime('%b %d')
 
-                        if current_date == todays_sheet.strip():
+                        if current_date == self.todays_sheet.strip():
                             logging.info("The Chan retrieved excel doc from oneDrive")
                             #interfaceExcel(file_content, todays_sheet)
-                            return (file_content, todays_sheet)
+                            self.todays_sheet = todays_sheet
+                            self.file_content = file_content
                         else:
                             logging.error("Today's sheet not found in the Excel book: %s",todays_sheet.strip() - current_date)
 
@@ -84,15 +87,15 @@ class OutboundWorkBook:
             logging.error(response.json())
 
 
-    def retrieve_surrey_outbound(trailer_bookings, excel_data_cont, access_token):
+    def retrieve_surrey_outbound(self,trailer_bookings):
         logging.info("Starting oneDrive sync with excel workbook")
-        excel_data = get_book(access_token)
+        excel_data = self._get_book()
         if excel_data is None:
             logging.critical("Failed to retrieve the Excel book and sheet.")
             sys.exit(1)
 
         bookname, sheetname = excel_data
-        excel_data_cont[0] = excel_data
+        self.excel_data = excel_data
 
         logging.info("Excel book: %s",bookname)
         logging.info("ExcelSheet: %s",sheetname)
@@ -107,9 +110,12 @@ class OutboundWorkBook:
         surrey_outbound_table = pd.read_excel(bookname, sheet_name=sheetname, usecols='x:AC', skiprows=12, nrows=11 )
 
 
+        _update_trailer_bookings_dict(trailer_bookings)
+        logging.debug(trailer_bookings)
+        
 
         #truncate the .0 from the float values in the dataframe
-        def update_dict(row_dict):
+        def _update_trailer_booking_dict(row_dict):
             def convert_value(value):
                 if pd.isna(value):
                     return value
@@ -143,11 +149,8 @@ class OutboundWorkBook:
             #----0
             #function param is row returns array with [trailer#, empty(bool),lh#,sailing time]
 
-        logging.debug(trailer_bookings)
-        logging.info("Starting trailer Linehauls...\n")
-        time.sleep(1)
-        return excel_data
-       # book(trailer_bookings=trailer_bookings)
+       
+        
 
     def update_surrey_outbound(trailer_booking, access_token):
         logging.info("Updating surrey outbound")
