@@ -5,7 +5,6 @@ import sys
 from threading import Thread, Event
 import logging
 from io import BytesIO
-import seapspan_booking
 
 
 
