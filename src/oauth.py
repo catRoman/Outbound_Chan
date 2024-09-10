@@ -1,11 +1,7 @@
 import msal
 import logging
 import sys
-import tkinter as tk
-from tkinterweb import HtmlFrame
-import json
-import time
-import queue
+
 
 
 logging = logging.getLogger(__name__)
@@ -21,7 +17,7 @@ def get_OAuth_token():
 
     # Check the cache to see whether we already have some accounts that the end user already used to sign in before.
     logging.info("acquiring existing accounts in cache")
-   
+
 
     logging.info("acquiring token")
     oauth_token = app.acquire_token_interactive(scopes=["User.Read", "Files.ReadWrite"])
@@ -36,5 +32,3 @@ def get_OAuth_token():
         logging.critical(oauth_token.get("error_description"))
         logging.critical(oauth_token.get("correlation_id"))
         sys.exit(1)
-
-

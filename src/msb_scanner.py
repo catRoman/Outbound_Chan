@@ -10,16 +10,16 @@ def scan_linehaul_number(screenshot):
     try:
         logging.info("Scanning for linehaul number")
         manifest_text = pytesseract.image_to_string(screenshot, config='--psm 6')
-        logging.debug(f"\n=====================\n=====================\nManifest text found: {manifest_text}\n=====================\n=====================\n")
+        logging.debug("\n=====================\n=====================\nManifest text found: %s\n=====================\n=====================\n", manifest_text)
         linehaul_number = re.search(linehaul_regex, manifest_text)
         if linehaul_number:
-            logging.info(f"Linehaul number found: {linehaul_number.group(1)}")
+            logging.info("Linehaul number found: %s", linehaul_number.group(1)")
             return linehaul_number.group(1)
         else:
             logging.error("Linehaul number not found...")
             return None
     except Exception as e:
-        logging.error(f"Error scanning linehaul number: {e}")
+        logging.error("Error scanning linehaul number: %s",e)
         return None
 
 
@@ -28,4 +28,4 @@ if __name__ == "__main__":
         pil_image = Image.open("linehaul.png")
         scan_linehaul_number(pil_image)
     except Exception as e:
-        logging.error(f"Error scanning linehaul number: {e}")
+        logging.error("Error scanning linehaul number: %s",e)
