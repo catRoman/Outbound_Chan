@@ -5,6 +5,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.keys import Keys
 from datetime import datetime, timedelta
 import time
 from dotenv import load_dotenv
@@ -100,8 +101,10 @@ def fill_new_job_fields(driver, trailer_bookings):
             remarks = driver.find_element(By.ID,"ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_txtConsignmentComments_I")
             logging.info(f"Booking trailer: {booking['Trailer']}")
             unit_number.send_keys(booking['Trailer'])
+            
+            unit_type.send_keys("Van"+ Keys.RETURN);
+
             try:
-                unit_type.send_keys("Van");
                 modal = WebDriverWait(driver, 10).until(
                     EC.visibility_of_element_located((By.ID, 'ctl00_content_puUnitSearch_PopupControlSFCUnitSearch_PW-1')))
                 close_btn = modal.find_element(By.ID, 'ctl00_content_puUnitSearch_PopupControlSFCUnitSearch_HCB-1')
@@ -109,9 +112,9 @@ def fill_new_job_fields(driver, trailer_bookings):
                 logging.debug(f"Modal closed, continuing booking")
             except Exception as e:
                 logging.debug(f"Modal not present, continuing booking")
-            length.send_keys("53")
-            route.send_keys("Swartz Bay > Tilbury")
-            po_number.send_keys(booking['LH#'])
+            length.send_keys("53"+ Keys.RETURN)
+            route.send_keys("Swartz Bay > Tilbury"+ Keys.RETURN)
+            po_number.send_keys(booking['LH#']+ Keys.RETURN)
             #tomorrows dat unless friday then monday
             adjusted_date = get_adjusted_date()
             pickup_date.send_keys(adjusted_date.strftime('%m/%d/%Y'))
@@ -124,8 +127,8 @@ def fill_new_job_fields(driver, trailer_bookings):
                 empty_radio_btn.click()
             else:
                 loaded_radio_btn.click()
-                contents.send_keys("Consumer- Commercial")
-            destination.send_keys("BC-Mainland - Lower Mainland")
+                contents.send_keys("Consumer- Commercial"+ Keys.RETURN)
+            destination.send_keys("BC-Mainland - Lower Mainland"+ Keys.RETURN)
             remarks.send_keys(booking['Sailing'])
 
 
@@ -230,7 +233,11 @@ def book(trailer_bookings):
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
     
-    book([{'Trailer': '53H328', 'Contents': 'Empty ??', 'LH#': '112559', 'BOL': 'nan', 'Sailing': '18:50 p3', 'Driver': '926'}])
+    book([{'Trailer': '53V579', 'Contents': 'Empty ??', 'LH#': '112592', 'BOL': 'nan', 'Sailing': '18:50 p3', 'Driver': '926'},
+    {'Trailer': '53V545', 'Contents': 'Empty ??', 'LH#': '112593', 'BOL': 'nan', 'Sailing': '18:50 p2', 'Driver': '926'},
+    {'Trailer': 'HVR2013R', 'Contents': 'Empty ??', 'LH#': '112594', 'BOL': 'nan', 'Sailing': '18:50 p1', 'Driver': '926'}
+    {'Trailer': '53R460', 'Contents': 'Empty ??', 'LH#': '112595', 'BOL': 'nan', 'Sailing': '18:50 p1', 'Driver': '926'}
+    ])
 else:
     logging = logging.getLogger(__name__)
 
