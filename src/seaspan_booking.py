@@ -235,9 +235,8 @@ if __name__ == "__main__":
     
     book([{'Trailer': '53V579', 'Contents': 'Empty ??', 'LH#': '112592', 'BOL': 'nan', 'Sailing': '18:50 p3', 'Driver': '926'},
     {'Trailer': '53V545', 'Contents': 'Empty ??', 'LH#': '112593', 'BOL': 'nan', 'Sailing': '18:50 p2', 'Driver': '926'},
-    {'Trailer': 'HVR2013R', 'Contents': 'Empty ??', 'LH#': '112594', 'BOL': 'nan', 'Sailing': '18:50 p1', 'Driver': '926'}
-    {'Trailer': '53R460', 'Contents': 'Empty ??', 'LH#': '112595', 'BOL': 'nan', 'Sailing': '18:50 p1', 'Driver': '926'}
-    ])
+    {'Trailer': 'HVR2013R', 'Contents': 'Empty ??', 'LH#': '112594', 'BOL': 'nan', 'Sailing': '18:50 p1', 'Driver': '926'},
+    {'Trailer': '53R460', 'Contents': 'Empty ??', 'LH#': '112595', 'BOL': 'nan', 'Sailing': '18:50 p1', 'Driver': '926'}])
 else:
     logging = logging.getLogger(__name__)
 
