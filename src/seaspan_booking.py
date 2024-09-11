@@ -77,19 +77,7 @@ def switch_to_new_job_tab(driver):
     driver.switch_to.window(window_handles[-1])
 
 def fill_new_job_fields(driver, trailer_bookings):
-    unit_number = WebDriverWait(driver, 30).until(
-    EC.visibility_of_element_located((By.ID,"ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_txtUnitNumber_I")))
-    unit_type = driver.find_element(By.ID,"ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_cmbContainerType_I")
-    length = driver.find_element(By.ID,"ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_seLength_I")
-    route = driver.find_element(By.ID,"ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_cmbRoute_I")
-    po_number = driver.find_element(By.ID, "ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_txtPONumber_I")
-    pickup_date = driver.find_element(By.ID,"ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_deShipmentDate_I")
-    pickup_time = driver.find_element(By.ID,"ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_teShipmentTime_I")
-    loaded_radio_btn = driver.find_element(By.ID,"ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_rbLoaded_S_D")
-    empty_radio_btn = driver.find_element(By.ID, "ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_rbEmpty_S_D")
-    contents = driver.find_element(By.ID,"ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_cmbContents_I")
-    destination = driver.find_element(By.ID, "ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_cmbDestination_I")
-    remarks = driver.find_element(By.ID,"ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_txtConsignmentComments_I")
+   
    
     
     #loop through booking list and populate
@@ -97,6 +85,19 @@ def fill_new_job_fields(driver, trailer_bookings):
     logging.info("attempting bookings....")
     for index, booking in enumerate(trailer_bookings):
         try:
+             unit_number = WebDriverWait(driver, 30).until(
+                EC.visibility_of_element_located((By.ID,"ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_txtUnitNumber_I")))
+            unit_type = driver.find_element(By.ID,"ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_cmbContainerType_I")
+            length = driver.find_element(By.ID,"ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_seLength_I")
+            route = driver.find_element(By.ID,"ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_cmbRoute_I")
+            po_number = driver.find_element(By.ID, "ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_txtPONumber_I")
+            pickup_date = driver.find_element(By.ID,"ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_deShipmentDate_I")
+            pickup_time = driver.find_element(By.ID,"ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_teShipmentTime_I")
+            loaded_radio_btn = driver.find_element(By.ID,"ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_rbLoaded_S_D")
+            empty_radio_btn = driver.find_element(By.ID, "ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_rbEmpty_S_D")
+            contents = driver.find_element(By.ID,"ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_cmbContents_I")
+            destination = driver.find_element(By.ID, "ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_cmbDestination_I")
+            remarks = driver.find_element(By.ID,"ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_txtConsignmentComments_I")
             logging.info(f"Booking trailer: {booking['Trailer']}")
             unit_number.send_keys(booking['Trailer'])
             try:
@@ -196,7 +197,7 @@ def save_and_continue_booking(driver):
         time.sleep(3)
         save_new_btn.click()
         logging.info("click")
-        time.sleep(30)
+        time.sleep(5)
     except Exception as e:
         logging.error(f"failed to continue booking: {e}")
         driver.quit()

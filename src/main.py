@@ -5,6 +5,7 @@ import sys
 from threading import Thread, Event
 import logging
 from io import BytesIO
+import seapspan_booking
 
 
 
@@ -42,7 +43,8 @@ def Linehaul_Booking(gui_button, gui_root, access_token):
             booking['LH#'] = msb_interface.create_new_linehaul(booking)
             time.sleep(1)
         
-        seapspan_booking.book(trailer_bookings)
+        seaspan_booking.book(trailer_bookings)
+        logging.info(trailer_bookings)
 
         if not cancel_linehaul.is_set():
             logging.info("Linehaul booking complete, updating workbook")
