@@ -85,7 +85,7 @@ def fill_new_job_fields(driver, trailer_bookings):
     logging.info("attempting bookings....")
     for index, booking in enumerate(trailer_bookings):
         try:
-             unit_number = WebDriverWait(driver, 30).until(
+            unit_number = WebDriverWait(driver, 30).until(
                 EC.visibility_of_element_located((By.ID,"ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_txtUnitNumber_I")))
             unit_type = driver.find_element(By.ID,"ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_cmbContainerType_I")
             length = driver.find_element(By.ID,"ctl00_content_ctlCallbackJobSCF_ASPxFormLayout_seLength_I")
